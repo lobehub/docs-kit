@@ -184,7 +184,7 @@ export default () => <Default value={renamed} namespace={Namespace} />;`;
   });
 
   it('transforms representative simple, StoryBook, and relative-helper repository demos', () => {
-    const repositoryRoot = resolve(import.meta.dirname, '../../..');
+    const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
     const sources = [
       'src/Flex/demos/basic.tsx',
       'src/Button/demos/index.tsx',

@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
 
 import { extractComponentApi } from './extractComponent';
 
-const fixtureRoot = resolve(import.meta.dirname, '../../../tests/fixtures/site/api');
+const fixtureRoot = resolve(import.meta.dirname, '../../../../../tests/fixtures/site/api');
 const tsconfigPath = resolve(fixtureRoot, 'tsconfig.json');
 const request = (document: string, name: string, from?: string) => ({
   documentPath: resolve(fixtureRoot, document),

@@ -10,7 +10,7 @@ export interface CutoverFinding {
 const expectedScripts = {
   'build': 'tsdown && npm run build:packages',
   'dev': 'react-router dev',
-  'docs:build': 'react-router build && tsx site/compiler/finalizeBuild.ts',
+  'docs:build': 'react-router build && tsx packages/docs-kit/site/compiler/finalizeBuild.ts',
   'docs:build-analyze': 'cross-env ANALYZE=1 bun run docs:build',
   'docs:dev': 'react-router dev',
   'setup': 'react-router typegen',
@@ -199,8 +199,8 @@ const auditRepositoryExecutableResidue = (root: string, findings: CutoverFinding
   const excludedFiles = new Set([
     'CHANGELOG.md',
     'docs/changelog.mdx',
-    'site/compiler/cutoverAudit.test.ts',
-    'site/compiler/cutoverAudit.ts',
+    'packages/docs-kit/site/compiler/cutoverAudit.test.ts',
+    'packages/docs-kit/site/compiler/cutoverAudit.ts',
   ]);
   const executableExtensions = new Set([
     '.cjs',
@@ -274,7 +274,7 @@ const auditCi = (root: string, findings: CutoverFinding[]): void => {
   }
 
   for (const command of [
-    'bunx vitest run site scripts/migrate-dumi-docs.test.ts',
+    'bunx vitest run packages/docs-kit/site scripts/migrate-dumi-docs.test.ts',
     'bunx tsx scripts/migrate-dumi-docs.ts --check',
     'bun run docs:build',
   ]) {

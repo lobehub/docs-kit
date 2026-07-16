@@ -6,7 +6,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer, type ViteDevServer } from 'vite';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../..');
+const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
 let server: ViteDevServer | undefined;
 
 afterEach(async () => {

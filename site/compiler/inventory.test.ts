@@ -41,7 +41,7 @@ describe('documentation inventory', () => {
   });
 
   it('selects public source docs while excluding internal specifications', () => {
-    const inventory = buildDocumentationInventory(resolve(import.meta.dirname, '../..'));
+    const inventory = buildDocumentationInventory(resolve(import.meta.dirname, '../../../..'));
 
     expect(inventory.documents).toHaveLength(165);
     expect(inventory.demoReferences).toHaveLength(524);
@@ -49,7 +49,7 @@ describe('documentation inventory', () => {
   });
 
   it('preserves duplicate-source demos as separate legacy aliases', () => {
-    const inventory = buildDocumentationInventory(resolve(import.meta.dirname, '../..'));
+    const inventory = buildDocumentationInventory(resolve(import.meta.dirname, '../../../..'));
     const aliases = inventory.demoReferences.filter(
       ({ source }) => source === 'src/DropdownMenu/demos/index.tsx',
     );
@@ -86,7 +86,7 @@ describe('documentation inventory', () => {
       ],
     } satisfies DocumentationInventory;
     const root = createFixture({
-      'site/content/compatibility.json': `${JSON.stringify(frozenInventory, null, 2)}\n`,
+      'packages/docs-kit/site/content/compatibility.json': `${JSON.stringify(frozenInventory, null, 2)}\n`,
       'src/Fixture/demos/index.tsx': '',
       'src/Fixture/index.mdx': `---
 title: Fixture
@@ -135,7 +135,7 @@ No legacy dumi code tag remains.
       ],
     } satisfies DocumentationInventory;
     const root = createFixture({
-      'site/content/compatibility.json': `${JSON.stringify(frozenInventory, null, 2)}\n`,
+      'packages/docs-kit/site/content/compatibility.json': `${JSON.stringify(frozenInventory, null, 2)}\n`,
       'src/.keep': '',
     });
 

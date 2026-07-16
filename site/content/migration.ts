@@ -3,7 +3,7 @@ import type {
   ApiTarget,
   DocumentMigrationConfig,
   MigrationConfig,
-} from '../../scripts/migrate-dumi-docs';
+} from '../../../../scripts/migrate-dumi-docs';
 import { apiOverrides } from './apiOverrides';
 import compatibility from './compatibility.json';
 import { reviewedCategoryOrder } from './navigation';

@@ -6,7 +6,7 @@ import remarkParse from 'remark-parse';
 import { unified } from 'unified';
 import type { Node, Parent } from 'unist';
 
-import { packageNamespaces } from '../../config/packageNamespaces';
+import { packageNamespaces } from '../../../../config/packageNamespaces';
 import { createLegacyDemoId } from './legacyDumiIds';
 import type { DemoOptions, DemoReference, DocumentationInventory, DocumentRecord } from './types';
 
@@ -48,7 +48,7 @@ const sortStrings = (left: string, right: string): number =>
 const isFile = (path: string): boolean => existsSync(path) && statSync(path).isFile();
 
 const readFrozenInventory = (root: string): DocumentationInventory | undefined => {
-  const path = resolve(root, 'site/content/compatibility.json');
+  const path = resolve(root, 'packages/docs-kit/site/content/compatibility.json');
   if (!isFile(path)) return;
 
   const inventory = JSON.parse(readFileSync(path, 'utf8')) as DocumentationInventory;
@@ -445,7 +445,7 @@ export function buildDocumentationInventory(root: string): DocumentationInventor
 }
 
 export function writeCompatibilityManifest(root: string, inventory: DocumentationInventory): void {
-  const outputPath = resolve(root, 'site/content/compatibility.json');
+  const outputPath = resolve(root, 'packages/docs-kit/site/content/compatibility.json');
   const output = `${JSON.stringify(inventory, null, 2)}\n`;
   if (existsSync(outputPath) && readFileSync(outputPath, 'utf8') === output) return;
 

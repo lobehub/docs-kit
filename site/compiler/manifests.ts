@@ -5,7 +5,7 @@ import { createContentManifest } from './content/createManifest';
 import { getStandaloneDemoPaths } from './demo/readLegacyMap';
 import type { DocumentationInventory } from './types';
 
-const repositoryRoot = path.resolve(import.meta.dirname, '../..');
+const repositoryRoot = path.resolve(import.meta.dirname, '../../../..');
 
 export function getPrerenderPaths(): string[] {
   return [

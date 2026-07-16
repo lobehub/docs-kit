@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 
 import { extractComponentApis } from './diagnostics';
 
-const fixtureRoot = resolve(import.meta.dirname, '../../../tests/fixtures/site/api');
+const fixtureRoot = resolve(import.meta.dirname, '../../../../../tests/fixtures/site/api');
 const tsconfigPath = resolve(fixtureRoot, 'tsconfig.json');
 
 it('aggregates malformed and unresolved API requests with corrective actions', () => {

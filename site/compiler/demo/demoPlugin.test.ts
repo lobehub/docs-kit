@@ -9,7 +9,7 @@ import { createLogger, createServer, type Plugin, type ViteDevServer } from 'vit
 import type { DemoModule } from '../../types/demo';
 import { demoPlugin } from './demoPlugin';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../..');
+const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
 let server: ViteDevServer | undefined;
 const temporaryRoots: string[] = [];
 

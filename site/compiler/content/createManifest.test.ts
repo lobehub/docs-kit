@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { createContentManifest } from './createManifest';
 
-const fixtureRoot = path.resolve(import.meta.dirname, '../../../tests/fixtures/site/content');
+const fixtureRoot = path.resolve(import.meta.dirname, '../../../../../tests/fixtures/site/content');
 const temporaryRoots: string[] = [];
 
 const createProjectFixture = (files: Record<string, string>): string => {

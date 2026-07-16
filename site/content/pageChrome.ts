@@ -1,4 +1,4 @@
-import { packageNamespaces } from '../../config/packageNamespaces';
+import { packageNamespaces } from '../../../../config/packageNamespaces';
 import type { DocumentManifestEntry, NavigationSection } from '../types/content';
 
 export interface DocumentLinks {

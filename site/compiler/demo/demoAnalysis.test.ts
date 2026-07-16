@@ -6,7 +6,7 @@ import { dirname, join, resolve } from 'node:path';
 
 import { analyzeDemo } from './demoAnalysis';
 
-const fixtureRoot = resolve(import.meta.dirname, '../../../tests/fixtures/site/demos');
+const fixtureRoot = resolve(import.meta.dirname, '../../../../../tests/fixtures/site/demos');
 const temporaryRoots: string[] = [];
 
 const createFixture = (files: Record<string, string>): string => {

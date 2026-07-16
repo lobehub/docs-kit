@@ -8,7 +8,7 @@ import { getStandaloneDemoPaths } from './demo/readLegacyMap';
 import { getPrerenderPaths } from './manifests';
 import type { DocumentationInventory } from './types';
 
-const repositoryRoot = path.resolve(import.meta.dirname, '../..');
+const repositoryRoot = path.resolve(import.meta.dirname, '../../../..');
 
 const write = (root: string, file: string, source: string): void => {
   const absolutePath = path.resolve(root, file);
@@ -19,7 +19,7 @@ const write = (root: string, file: string, source: string): void => {
 const validScripts = {
   'build': 'tsdown && npm run build:packages',
   'dev': 'react-router dev',
-  'docs:build': 'react-router build && tsx site/compiler/finalizeBuild.ts',
+  'docs:build': 'react-router build && tsx packages/docs-kit/site/compiler/finalizeBuild.ts',
   'docs:build-analyze': 'cross-env ANALYZE=1 bun run docs:build',
   'docs:dev': 'react-router dev',
   'setup': 'react-router typegen',
@@ -47,7 +47,7 @@ const createValidFixture = (): string => {
   write(
     root,
     '.github/workflows/test.yml',
-    'run: |\n  bunx vitest run site scripts/migrate-dumi-docs.test.ts\n  bunx tsx scripts/migrate-dumi-docs.ts --check\n  bun run docs:build\n',
+    'run: |\n  bunx vitest run packages/docs-kit/site scripts/migrate-dumi-docs.test.ts\n  bunx tsx scripts/migrate-dumi-docs.ts --check\n  bun run docs:build\n',
   );
   write(
     root,
@@ -81,7 +81,7 @@ it('distinguishes executable legacy coupling from compatibility vocabulary and h
     write(root, 'docs/changelog.mdx', 'The documentation previously used dumi.\n');
     write(
       root,
-      'site/compiler/legacyDumiIds.ts',
+      'packages/docs-kit/site/compiler/legacyDumiIds.ts',
       "export const legacyDumiIds = ['docs-demo-docs'];\n",
     );
     expect(findExecutableDumiReferences(root)).toEqual([]);

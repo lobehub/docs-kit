@@ -108,7 +108,7 @@ export async function finalizeDocumentationBuild(
   { clientDirectory, outputDirectory, repositoryRoot }: FinalizeBuildOptions,
   dependencies: FinalizeBuildDependencies = {},
 ): Promise<MigrationCoverageResult> {
-  const root = path.resolve(repositoryRoot ?? path.resolve(import.meta.dirname, '../..'));
+  const root = path.resolve(repositoryRoot ?? path.resolve(import.meta.dirname, '../../../..'));
   const client = path.resolve(clientDirectory);
   const output = path.resolve(outputDirectory);
   const outputParent = path.dirname(output);

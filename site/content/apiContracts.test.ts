@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { extractComponentApi } from '../compiler/api/extractComponent';
 
-const root = path.resolve(import.meta.dirname, '../..');
+const root = path.resolve(import.meta.dirname, '../../../..');
 
 describe('generated API runtime defaults', () => {
   it.each([

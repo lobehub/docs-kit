@@ -5,7 +5,7 @@ import path from 'node:path';
 
 import { apiOverrides } from './apiOverrides';
 
-const root = path.resolve(import.meta.dirname, '../..');
+const root = path.resolve(import.meta.dirname, '../../../..');
 const lobeUiSourcePrefix = 'https://github.com/lobehub/lobe-ui/tree/master/';
 const approvedExternalSources = new Set([
   'https://github.com/lobehub/lobe-icons/tree/master/src/Cloudflare/index.ts',

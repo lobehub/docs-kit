@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 
 import { createServer, type ViteDevServer } from 'vite';
 
-const repositoryRoot = resolve(import.meta.dirname, '../..');
+const repositoryRoot = resolve(import.meta.dirname, '../../../..');
 let server: ViteDevServer | undefined;
 
 afterEach(async () => {

@@ -2,11 +2,11 @@
 
 import path from 'node:path';
 
-import { migrateDumiDocs } from '../../scripts/migrate-dumi-docs';
+import { migrateDumiDocs } from '../../../../scripts/migrate-dumi-docs';
 import { extractComponentApi } from '../compiler/api/extractComponent';
 import { migration } from './migration';
 
-const repositoryRoot = path.resolve(import.meta.dirname, '../..');
+const repositoryRoot = path.resolve(import.meta.dirname, '../../../..');
 
 describe('reviewed production migration metadata', () => {
   it('grounds demo-only API omission reasons in the frozen page evidence', () => {

@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 
 import { createServer, type ViteDevServer } from 'vite';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../..');
+const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
 let server: ViteDevServer | undefined;
 
 afterEach(async () => {
@@ -18,7 +18,9 @@ it('caches one React-compatible import promise per document pathname', async () 
     logLevel: 'silent',
     server: { middlewareMode: true },
   });
-  const { loadDocument } = await server.ssrLoadModule('/site/app/content/registry.ts');
+  const { loadDocument } = await server.ssrLoadModule(
+    '/packages/docs-kit/site/app/content/registry.ts',
+  );
 
   const first = loadDocument('/');
   const second = loadDocument('/');

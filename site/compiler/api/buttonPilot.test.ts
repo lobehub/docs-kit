@@ -11,7 +11,7 @@ import { styles as demoStyles } from '../../components/Demo/style';
 import type { DocumentationInventory } from '../types';
 import { extractComponentApi } from './extractComponent';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../..');
+const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
 const documentPath = resolve(repositoryRoot, 'src/Button/index.mdx');
 let server: ViteDevServer | undefined;
 
@@ -24,7 +24,10 @@ it('migrates the Button guide once while preserving both demos and the generated
   expect(existsSync(resolve(repositoryRoot, 'src/Button/index.md'))).toBe(false);
   const source = readFileSync(documentPath, 'utf8');
   const compatibility = JSON.parse(
-    readFileSync(resolve(repositoryRoot, 'site/content/compatibility.json'), 'utf8'),
+    readFileSync(
+      resolve(repositoryRoot, 'packages/docs-kit/site/content/compatibility.json'),
+      'utf8',
+    ),
   ) as DocumentationInventory;
 
   expect(source).toContain("import Basic from './demos/index.tsx?demo'");
