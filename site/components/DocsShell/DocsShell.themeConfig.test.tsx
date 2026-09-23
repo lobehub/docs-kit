@@ -1,9 +1,9 @@
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 
 import { SiteProviders, useSiteTheme } from '../../app/providers/SiteProviders';
-import { Header } from './Header';
+import { DocsShell } from './DocsShell';
 
 vi.mock('virtual:lobedocs/site-config', () => ({
   default: {
@@ -58,12 +58,6 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-const openMenu = (trigger: HTMLElement) => {
-  fireEvent.pointerDown(trigger);
-  fireEvent.mouseDown(trigger);
-  fireEvent.click(trigger);
-};
-
 const ThemeProbe = () => {
   const { appearance, preference } = useSiteTheme();
 
@@ -81,39 +75,42 @@ it('exposes the configured forced theme during the initial render', () => {
   expect(probe.getAttribute('data-preference')).toBe('dark');
 });
 
-it('keeps internal navItems visible and moves external ecosystem links into the more menu', async () => {
-  const open = vi.spyOn(window, 'open').mockImplementation(() => null);
-
+it('lists navItems in the overview group and renders actions in the top bar', () => {
   render(
     <SiteProviders>
       <MemoryRouter>
-        <Header navigation={[]} onSearchOpen={vi.fn()} />
+        <DocsShell documents={[]} navigation={[]} onSearchOpen={vi.fn()}>
+          <p>Home</p>
+        </DocsShell>
       </MemoryRouter>
     </SiteProviders>,
   );
 
-  const nav = screen.getByRole('navigation', { name: 'Documentation sections' });
-  const guidesLink = within(nav).getByRole('link', { name: 'Guides' });
-  expect(guidesLink.getAttribute('href')).toBe('/guides/getting-started');
-  expect(guidesLink.getAttribute('target')).toBeNull();
+  const nav = screen.getByRole('navigation', { name: 'Documentation' });
+  expect(
+    within(nav)
+      .getAllByRole('link')
+      .map((link) => link.textContent),
+  ).toEqual(['Home', 'Guides', 'Blog', 'skills.md', 'llms.txt', 'Changelog']);
+  expect(within(nav).getByRole('link', { name: 'skills.md' }).getAttribute('target')).toBe(
+    '_blank',
+  );
 
-  expect(within(nav).queryByRole('link', { name: 'Blog' })).toBeNull();
+  const guides = within(nav).getByRole('link', { name: 'Guides' });
+  expect(guides.getAttribute('href')).toBe('/guides/getting-started');
+  expect(guides.getAttribute('target')).toBeNull();
 
-  openMenu(within(nav).getByRole('button', { name: 'More navigation links' }));
-  const menu = await screen.findByRole('menu');
-  const blogItem = within(menu).getByRole('menuitem', { name: 'Blog' });
-  fireEvent.click(blogItem);
-  expect(open).toHaveBeenCalledWith('https://example.com/blog', '_blank', 'noopener,noreferrer');
-  expect(within(menu).getByRole('menuitem', { name: 'Changelog' })).toBeTruthy();
+  const blog = within(nav).getByRole('link', { name: 'Blog' });
+  expect(blog.getAttribute('href')).toBe('https://example.com/blog');
+  expect(blog.getAttribute('target')).toBe('_blank');
+  expect(blog.getAttribute('rel')).toBe('noreferrer');
 
-  const sponsorLink = screen.getByRole('link', { name: 'Sponsor' });
-  expect(sponsorLink.getAttribute('href')).toBe('https://example.com/sponsor');
-  expect(sponsorLink.getAttribute('target')).toBe('_blank');
-  expect(sponsorLink.getAttribute('rel')).toBe('noreferrer');
+  const sponsor = screen.getByRole('link', { name: 'Sponsor' });
+  expect(sponsor.getAttribute('href')).toBe('https://example.com/sponsor');
+  expect(sponsor.getAttribute('target')).toBe('_blank');
 
-  const navLinks = within(nav).getAllByRole('link');
-  expect(navLinks.map((link) => link.textContent)).toEqual(['Home', 'Guides']);
-
-  const homeLink = screen.getByRole('link', { name: 'Test Docs documentation home' });
-  expect(homeLink.textContent).toContain('Test Docs');
+  expect(screen.queryByRole('button', { name: 'Select theme' })).toBeNull();
+  expect(screen.getByRole('link', { name: 'Test Docs documentation home' }).textContent).toContain(
+    'Docs',
+  );
 });
