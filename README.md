@@ -2,7 +2,7 @@
 
 A reusable documentation-site toolkit for LobeHub component libraries — a React Router + Vite static-site stack, packaged the way `dumi` + `dumi-theme-lobehub` used to be combined, but installable across repos.
 
-`lobe-ui` is the first consumer (dogfooding): the site under `packages/docs-kit/site` compiles component docs, standalone demos, a search index, and a changelog page into a static build. Consumer repos hold only content and a config file — the kit owns every build tool config internally.
+It powers [ui.lobehub.com](https://ui.lobehub.com): the site under `site/` compiles component docs, standalone demos, a search index, and a changelog page into a static build. Consumer repos hold only content and a config file — the kit owns every build tool config internally.
 
 ## Consumer surface
 
@@ -44,16 +44,14 @@ lobedocs typegen # react-router typegen
 ### `docs.config.ts`
 
 ```ts
-import { defineDocsConfig } from './packages/docs-kit/src/config';
-
-export default defineDocsConfig({
+export default {
   atomDirs: [{ dir: 'src' }],
   title: 'Lobe UI',
   description: '...',
   siteUrl: 'https://ui.lobehub.com',
   navSections: {/* path -> nav section label */},
   themeConfig: {/* ... */},
-});
+};
 ```
 
 | Field                                  | Type                                                 | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
@@ -100,7 +98,14 @@ Both routes are available from `lobedocs dev` and are prerendered into the stati
 - `src/cli/` — `lobedocs` command implementations
 - `src/config.ts` — `defineDocsConfig`, config loading/caching
 
-## Roadmap
+## Development
 
-This package is at Phase 1 of a four-phase extraction (lobe-ui-only today, `lobe-editor` adoption later). See the full plan, including Phase 2's giscus/changelog/multi-atomDir work and Phase 3/4's `lobe-editor` migration, in
-[`docs/superpowers/specs/2026-07-16-docs-kit-extraction-design.md`](../../docs/superpowers/specs/2026-07-16-docs-kit-extraction-design.md).
+```bash
+pnpm install
+pnpm dev              # lobedocs dev against playground/
+pnpm build:playground # full static build of playground/
+pnpm test             # vitest, run from playground/ as the consumer cwd
+pnpm lint && pnpm type-check
+```
+
+`playground/` is a minimal consumer repo (a workspace package linking this kit) used for local development, the compiler integration tests and the CI build smoke test. Commits follow gitmoji + conventional commits; releases are published to npm by semantic-release from `main`.

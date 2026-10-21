@@ -6,10 +6,10 @@ import { dirname, join, resolve } from 'node:path';
 
 import { createLogger, createServer, type Plugin, type ViteDevServer } from 'vite';
 
+import { fixturesRoot, playgroundRoot } from '../../../tests/roots';
 import type { DemoModule } from '../../types/demo';
 import { demoPlugin } from './demoPlugin';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
 let server: ViteDevServer | undefined;
 const temporaryRoots: string[] = [];
 
@@ -62,8 +62,8 @@ const loadDescriptor = async (source: string): Promise<DemoModule> => {
   server ??= await createServer({
     configFile: false,
     logLevel: 'silent',
-    plugins: [demoPlugin({ root: repositoryRoot })],
-    root: repositoryRoot,
+    plugins: [demoPlugin({ root: playgroundRoot })],
+    root: playgroundRoot,
     server: { middlewareMode: true },
   });
 
@@ -87,7 +87,7 @@ afterEach(async () => {
 });
 
 it('keeps the canonical demo and editable dependency scope independently lazy', async () => {
-  const descriptor = await loadDescriptor('/tests/fixtures/site/demos/simple.tsx?demo');
+  const descriptor = await loadDescriptor(`/@fs${fixturesRoot}/demos/simple.tsx?demo`);
 
   expect((globalThis as any).__lobeDemoExecutionLog).toEqual([]);
   expect((globalThis as any).__lobeDemoScopeLog).toEqual([]);
@@ -99,7 +99,7 @@ it('keeps the canonical demo and editable dependency scope independently lazy', 
 });
 
 it('loads the editable scope without evaluating the selected demo entry', async () => {
-  const descriptor = await loadDescriptor('/tests/fixtures/site/demos/local-import.tsx?demo');
+  const descriptor = await loadDescriptor(`/@fs${fixturesRoot}/demos/local-import.tsx?demo`);
 
   await descriptor.loadScope();
 
@@ -132,7 +132,7 @@ it('resolves repository aliases from virtual editable scope modules', async () =
 });
 
 it('preserves empty JavaScript imports as editable-scope side effects', async () => {
-  const descriptor = await loadDescriptor('/tests/fixtures/site/demos/empty-import-entry.js?demo');
+  const descriptor = await loadDescriptor(`/@fs${fixturesRoot}/demos/empty-import-entry.js?demo`);
 
   expect((globalThis as any).__lobeDemoEmptyImportLog).toEqual([]);
 
@@ -143,35 +143,32 @@ it('preserves empty JavaScript imports as editable-scope side effects', async ()
 });
 
 it('preserves every frozen alias by source, including repeated and punctuation-bearing IDs', async () => {
-  const repeated = await loadDescriptor('/src/DropdownMenu/demos/index.tsx?demo');
-  const punctuated = await loadDescriptor('/src/mdx/Cards/demos/index.tsx?demo');
+  const repeated = await loadDescriptor('/src/Button/demos/index.tsx?demo');
+  const punctuated = await loadDescriptor('/src/Button/demos/Variant.tsx?demo');
 
-  expect(repeated.legacyIds).toEqual([
-    'src-dropdown-menu-demo-demos',
-    'src-base-ui-dropdown-menu-demo-demos',
-  ]);
-  expect(repeated.routeId).toBe('components/DropdownMenu/index');
-  expect(punctuated.legacyIds).toEqual(['cards, card-demo-demos']);
+  expect(repeated.legacyIds).toEqual(['src-button-demo-demos', 'src-base-ui-button-demo-demos']);
+  expect(repeated.routeId).toBe('components/Button/index');
+  expect(punctuated.legacyIds).toEqual(['button, variant-demo-demos']);
 });
 
 it('does not execute browser-only entries during descriptor evaluation or hide editability', async () => {
-  const descriptor = await loadDescriptor('/tests/fixtures/site/demos/browser-only.tsx?demo');
+  const descriptor = await loadDescriptor(`/@fs${fixturesRoot}/demos/browser-only.tsx?demo`);
 
   expect(descriptor.editable).toBe(true);
   expect((globalThis as any).__lobeDemoExecutionLog).toEqual([]);
 });
 
 it('keeps the demo route when an importing MDX document does not reference the demo', async () => {
-  const rootImporter = resolve(repositoryRoot, 'src/DropdownMenu/index.mdx');
-  const baseImporter = resolve(repositoryRoot, 'src/ContextMenu/index.mdx');
+  const rootImporter = resolve(playgroundRoot, 'src/Button/index.mdx');
+  const baseImporter = resolve(playgroundRoot, 'docs/guide.mdx');
   const importers = new Map([
-    ['virtual:root-dropdown-demo', rootImporter],
-    ['virtual:base-dropdown-demo', baseImporter],
+    ['virtual:root-button-demo', rootImporter],
+    ['virtual:guide-button-demo', baseImporter],
   ]);
   const contextualImporters: Plugin = {
     load(id) {
       if (id !== rootImporter && id !== baseImporter) return;
-      return `import demo from '/src/DropdownMenu/demos/index.tsx?demo'; export default demo;`;
+      return `import demo from '/src/Button/demos/index.tsx?demo'; export default demo;`;
     },
     name: 'contextual-demo-importers',
     resolveId(id) {
@@ -181,18 +178,18 @@ it('keeps the demo route when an importing MDX document does not reference the d
   server = await createServer({
     configFile: false,
     logLevel: 'silent',
-    plugins: [contextualImporters, demoPlugin({ root: repositoryRoot })],
-    root: repositoryRoot,
+    plugins: [contextualImporters, demoPlugin({ root: playgroundRoot })],
+    root: playgroundRoot,
     server: { middlewareMode: true },
   });
 
-  const rootDescriptor = (await server.ssrLoadModule('virtual:root-dropdown-demo'))
+  const rootDescriptor = (await server.ssrLoadModule('virtual:root-button-demo'))
     .default as DemoModule;
-  const baseDescriptor = (await server.ssrLoadModule('virtual:base-dropdown-demo'))
+  const baseDescriptor = (await server.ssrLoadModule('virtual:guide-button-demo'))
     .default as DemoModule;
 
-  expect(rootDescriptor.routeId).toBe('components/DropdownMenu/index');
-  expect(baseDescriptor.routeId).toBe('components/DropdownMenu/index');
+  expect(rootDescriptor.routeId).toBe('components/Button/index');
+  expect(baseDescriptor.routeId).toBe('components/Button/index');
   expect(baseDescriptor.legacyIds).toEqual(rootDescriptor.legacyIds);
 });
 

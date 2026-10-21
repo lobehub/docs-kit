@@ -20,9 +20,7 @@ beforeEach(() => {
   });
   vi.spyOn(window, 'scrollTo').mockImplementation((...args: unknown[]) => {
     const y =
-      typeof args[0] === 'number'
-        ? args[1]
-        : ((args[0] as ScrollToOptions | undefined)?.top ?? 0);
+      typeof args[0] === 'number' ? args[1] : ((args[0] as ScrollToOptions | undefined)?.top ?? 0);
     Object.defineProperty(window, 'scrollY', {
       configurable: true,
       value: y,

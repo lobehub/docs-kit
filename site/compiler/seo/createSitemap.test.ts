@@ -11,9 +11,9 @@ it('creates a sorted deduplicated absolute sitemap and excludes non-document rou
     '/__spa-fallback.html',
   ]);
 
-  expect(sitemap).toContain('<loc>https://ui.lobehub.com/</loc>');
-  expect(sitemap).toContain('<loc>https://ui.lobehub.com/components/alpha</loc>');
-  expect(sitemap).toContain('<loc>https://ui.lobehub.com/components/zeta</loc>');
+  expect(sitemap).toContain('<loc>https://docs-kit.lobehub.com/</loc>');
+  expect(sitemap).toContain('<loc>https://docs-kit.lobehub.com/components/alpha</loc>');
+  expect(sitemap).toContain('<loc>https://docs-kit.lobehub.com/components/zeta</loc>');
   expect(sitemap.match(/components\/alpha/g)).toHaveLength(1);
   expect(sitemap).not.toContain('~demos');
   expect(sitemap).not.toContain('/404');
@@ -35,7 +35,7 @@ it('generates robots directives that keep demos out of crawling and advertise th
       'Allow: /',
       'Disallow: /~demos/',
       '',
-      'Sitemap: https://ui.lobehub.com/sitemap.xml',
+      'Sitemap: https://docs-kit.lobehub.com/sitemap.xml',
       '',
     ].join('\n'),
   );
@@ -48,7 +48,7 @@ it('uses the supplied origin consistently while normalizing absolute inputs', ()
   );
 
   expect(sitemap).toContain('https://docs.example.com/components/button');
-  expect(sitemap).not.toContain('https://ui.lobehub.com');
+  expect(sitemap).not.toContain('https://docs-kit.lobehub.com');
 });
 
 it('lists documents followed by section and category overview pages', () => {

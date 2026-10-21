@@ -8,25 +8,21 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer, type ViteDevServer } from 'vite';
 
-import { stylexOptions } from '../../../../../config/stylex';
+import { fixturesRoot, kitRoot } from '../../../tests/roots';
 import { lobeDocsSiteConfigPlugin } from '../vitePlugin';
 import { createContentManifest } from './createManifest';
 import { defaultAtomDirs } from './discoverDocuments';
 import { createMdxPlugin } from './mdxPlugin';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
-const fixtureExcerptPath = resolve(
-  repositoryRoot,
-  'tests/fixtures/site/content/changelog-realistic-excerpt.md',
-);
-const mdxComponentsPath = resolve(repositoryRoot, 'packages/docs-kit/site/app/mdx-components.tsx');
+const fixtureExcerptPath = resolve(fixturesRoot, 'content/changelog-realistic-excerpt.md');
+const mdxComponentsPath = resolve(kitRoot, 'site/app/mdx-components.tsx');
 
 let server: ViteDevServer | undefined;
 const temporaryRoots: string[] = [];
 // Nested under the repository's own node_modules so bare-specifier
 // resolution (react/jsx-dev-runtime, etc.) walks up to the real install,
 // the same as any consumer project would.
-const temporaryRootParent = resolve(repositoryRoot, 'node_modules/.tmp-changelog-fallback-route');
+const temporaryRootParent = resolve(kitRoot, 'node_modules/.tmp-changelog-fallback-route');
 mkdirSync(temporaryRootParent, { recursive: true });
 
 const createFixtureConsumerRoot = (): string => {
@@ -77,21 +73,22 @@ it('renders the realistic CHANGELOG.md fallback content for a fixture consumer w
   server = await createServer({
     configFile: false,
     logLevel: 'silent',
-    plugins: [stylex(stylexOptions), lobeDocsSiteConfigPlugin(root), createMdxPlugin()],
+    plugins: [
+      stylex({ classNamePrefix: 'ld', runtimeInjection: true }),
+      lobeDocsSiteConfigPlugin(root),
+      createMdxPlugin(),
+    ],
     resolve: {
       alias: [
         {
           find: '/packages/docs-kit/site/app/mdx-components',
           replacement: mdxComponentsPath,
         },
-        { find: '@lobehub/ui/es', replacement: resolve(repositoryRoot, 'src') },
-        { find: '@lobehub/ui', replacement: resolve(repositoryRoot, 'src') },
-        { find: '@', replacement: resolve(repositoryRoot, 'src') },
       ],
     },
     root,
     server: {
-      fs: { allow: [repositoryRoot] },
+      fs: { allow: [kitRoot] },
       middlewareMode: true,
     },
     ssr: {

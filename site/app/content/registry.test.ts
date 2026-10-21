@@ -4,7 +4,8 @@ import { resolve } from 'node:path';
 
 import { createServer, type ViteDevServer } from 'vite';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
+import { kitRoot } from '../../../tests/roots';
+
 let server: ViteDevServer | undefined;
 
 afterEach(async () => {
@@ -14,12 +15,12 @@ afterEach(async () => {
 
 it('caches one React-compatible import promise per document pathname', async () => {
   server = await createServer({
-    configFile: resolve(repositoryRoot, 'packages/docs-kit/vite.config.ts'),
+    configFile: resolve(kitRoot, 'vite.config.ts'),
     logLevel: 'silent',
     server: { middlewareMode: true },
   });
   const { loadDocument } = await server.ssrLoadModule(
-    '/packages/docs-kit/site/app/content/registry.ts',
+    `/@fs${kitRoot}/site/app/content/registry.ts`,
   );
 
   const first = loadDocument('/');

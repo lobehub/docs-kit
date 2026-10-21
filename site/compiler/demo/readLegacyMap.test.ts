@@ -1,4 +1,4 @@
-import compatibility from '../../../../../compatibility.json';
+import compatibility from '../../../playground/compatibility.json';
 import type { DocumentationInventory } from '../types';
 import {
   createStandaloneDemoPath,
@@ -20,8 +20,8 @@ it('preserves every frozen alias and adds one canonical id per unique source', (
   expect(new Set(entries.map(({ id }) => id)).size).toBe(entries.length);
   expect(entries).toContainEqual(
     expect.objectContaining({
-      id: 'docs-demo-docs',
-      sourcePath: 'docs/index.tsx',
+      id: 'src-button-demo-demos',
+      sourcePath: 'src/Button/demos/index.tsx',
     }),
   );
 });
@@ -29,14 +29,13 @@ it('preserves every frozen alias and adds one canonical id per unique source', (
 it('retains route metadata on each alias of a shared source', () => {
   const entries = readLegacyMap(realInventory);
   const shared = entries.filter(
-    ({ kind, sourcePath }) =>
-      kind === 'legacy' && sourcePath === 'src/DropdownMenu/demos/index.tsx',
+    ({ kind, sourcePath }) => kind === 'legacy' && sourcePath === 'src/Button/demos/index.tsx',
   );
 
   expect(shared).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({ routeId: 'components/DropdownMenu/index' }),
-      expect.objectContaining({ routeId: 'components/DropdownMenu/index' }),
+      expect.objectContaining({ routeId: 'components/Button/index' }),
+      expect.objectContaining({ routeId: 'components/Button/index' }),
     ]),
   );
 });

@@ -325,7 +325,7 @@ it('aggregates metadata, routing, link, standalone, sitemap, Pagefind, fallback,
   const message = diagnostics.join('\n');
 
   expect(message).toMatch(/description/i);
-  expect(message).toMatch(/canonical.*absolute|canonical.*https:\/\/ui\.lobehub\.com/i);
+  expect(message).toMatch(/canonical.*absolute|canonical.*https:\/\/docs-kit\.lobehub\.com/i);
   expect(message).toMatch(/Open Graph|og:/i);
   expect(message).toMatch(/duplicate.*duplicate/i);
   expect(message).toMatch(/components\/missing/i);
@@ -475,7 +475,7 @@ it('requires the sitemap to list overview pages that were prerendered', () => {
 
   const missing = collectArtifactDiagnostics(options).diagnostics.join('\n');
   expect(missing).toMatch(
-    /sitemap\.xml is missing https:\/\/ui\.lobehub\.com\/sections\/components/,
+    /sitemap\.xml is missing https:\/\/docs-kit\.lobehub\.com\/sections\/components/,
   );
   expect(missing).toMatch(/sitemap\.xml lists \/sections\/components, which has no HTML artifact/);
 

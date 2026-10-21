@@ -16,6 +16,24 @@ const renderWithConfig = (ui: ReactElement) => render(ui, { wrapper: ConfigWrapp
 
 const themeMocks = vi.hoisted(() => ({ appearance: 'light' as 'dark' | 'light' }));
 
+vi.mock('virtual:lobedocs/site-config', () => ({
+  default: {
+    description: 'Test site.',
+    favicons: {},
+    navSections: {},
+    siteUrl: 'https://example.com',
+    themeConfig: {
+      giscus: {
+        category: 'Q&A',
+        categoryId: 'DIC_fixture',
+        repo: 'lobehub/docs-kit',
+        repoId: 'R_fixture',
+      },
+    },
+    title: 'Test Docs',
+  },
+}));
+
 vi.mock('../../app/providers/SiteProviders', () => ({
   useSiteTheme: () => ({ appearance: themeMocks.appearance }),
 }));
@@ -96,7 +114,7 @@ it('does not load giscus until discussion is opened and maps by page title', asy
   expect(screen.getByText('Discussion loaded').dataset.term).toBeUndefined();
 });
 
-it('passes the real docs.config.ts giscus settings through to the Giscus component', async () => {
+it('passes the configured giscus settings through to the Giscus component', async () => {
   const giscusConfig = siteConfig.themeConfig?.giscus;
   expect(giscusConfig).toBeDefined();
 

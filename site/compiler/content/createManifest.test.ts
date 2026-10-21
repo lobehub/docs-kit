@@ -3,15 +3,15 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { getDocsConfig } from '../../../src/config';
+import { fixturesRoot, playgroundRoot } from '../../../tests/roots';
 import { createContentManifest } from './createManifest';
 import { defaultAtomDirs } from './discoverDocuments';
 
-const fixtureRoot = path.resolve(import.meta.dirname, '../../../../../tests/fixtures/site/content');
-const repositoryRoot = path.resolve(import.meta.dirname, '../../../../..');
+const fixtureRoot = path.resolve(fixturesRoot, 'content');
 const temporaryRoots: string[] = [];
 
 const createManifestWithRepositoryConfig = (root: string) => {
-  const config = getDocsConfig(repositoryRoot);
+  const config = getDocsConfig(playgroundRoot);
   return createContentManifest(root, config.atomDirs ?? defaultAtomDirs, config.navSections ?? {});
 };
 

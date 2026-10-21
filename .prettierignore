@@ -1,0 +1,8 @@
+**/node_modules
+**/dist
+**/.react-router
+coverage
+.vitest
+pnpm-lock.yaml
+CHANGELOG.md
+site/compiler/.cache

@@ -8,7 +8,8 @@ import { type ComponentType, createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer, type ViteDevServer } from 'vite';
 
-const repositoryRoot = path.resolve(import.meta.dirname, '../../../../..');
+import { kitRoot } from '../../../tests/roots';
+
 let server: ViteDevServer | undefined;
 
 afterEach(async () => {
@@ -18,21 +19,21 @@ afterEach(async () => {
 
 it('renders the production dynamic-import demo through the read-only source contract', async () => {
   server = await createServer({
-    configFile: path.resolve(repositoryRoot, 'packages/docs-kit/vite.config.ts'),
+    configFile: path.resolve(kitRoot, 'vite.config.ts'),
     logLevel: 'silent',
     server: { middlewareMode: true },
   });
-  const module = (await server.ssrLoadModule('/src/i18n/index.mdx')) as {
+  const module = (await server.ssrLoadModule('/src/Button/index.mdx')) as {
     default: ComponentType;
   };
   // The mdx module lives in vite's SSR graph, so its React context instances only
   // match a provider loaded through the same graph — a top-level import gives a
   // different MotionComponent context and the controls still read it as unset.
-  const { MotionProvider } = await server.ssrLoadModule('/src/MotionProvider/index.tsx');
+  const { MotionProvider } = await server.ssrLoadModule('@lobehub/ui');
   const $ = load(
     renderToStaticMarkup(createElement(MotionProvider, { motion }, createElement(module.default))),
   );
-  const frame = $('section[aria-label="Demo: src/i18n/demos/DynamicImport.tsx"]');
+  const frame = $('section[aria-label="Demo: src/Button/demos/DynamicImport.tsx"]');
   const toolbarLabels = frame
     .find('button, [role="button"]')
     .toArray()

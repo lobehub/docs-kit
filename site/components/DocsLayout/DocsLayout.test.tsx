@@ -7,10 +7,17 @@ import { renderToString } from 'react-dom/server';
 import { MemoryRouter, useLocation } from 'react-router';
 import siteConfig from 'virtual:lobedocs/site-config';
 
-import { styles as modalStyles } from '@/Modal/style';
-
 import type { DocumentManifestEntry } from '../../types/content';
 import { DocsLayout } from './DocsLayout';
+
+const demoStyles = stylex.create({
+  title: {
+    fontSize: 14,
+    fontWeight: 600,
+    lineHeight: 1.4,
+    margin: 0,
+  },
+});
 
 if (!Element.prototype.getAnimations) {
   Element.prototype.getAnimations = () => [];
@@ -108,10 +115,10 @@ it('derives the Source and Edit links from the real docs.config.ts apiHeader', (
   );
 
   expect(screen.getByRole('link', { name: /Source/ }).getAttribute('href')).toBe(
-    `${repositoryUrl}/tree/master/src/Alpha`,
+    `${repositoryUrl}/tree/main/playground/src/Alpha`,
   );
   expect(screen.getByRole('link', { name: /Edit/ }).getAttribute('href')).toBe(
-    `${repositoryUrl}/edit/master/src/Alpha/index.mdx`,
+    `${repositoryUrl}/edit/main/playground/src/Alpha/index.mdx`,
   );
 });
 
@@ -162,7 +169,7 @@ it('does not override component typography inside an embedded demo', () => {
       <DocsLayout document={alphaDocument} navigation={[]}>
         <h2>Documentation heading</h2>
         <section data-demo-layout="default">
-          <h2 {...stylex.props(modalStyles.title)}>Demo modal title</h2>
+          <h2 {...stylex.props(demoStyles.title)}>Demo modal title</h2>
         </section>
       </DocsLayout>
     </MemoryRouter>,

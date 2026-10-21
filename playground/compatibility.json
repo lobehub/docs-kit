@@ -1,0 +1,51 @@
+{
+  "demoReferences": [
+    {
+      "document": "src/Button/index.mdx",
+      "legacyId": "src-button-demo-demos",
+      "legacyRouteId": "components/Button/index",
+      "options": {
+        "inline": false,
+        "isolated": false,
+        "layout": "default"
+      },
+      "pathname": "/components/button",
+      "source": "src/Button/demos/index.tsx"
+    },
+    {
+      "document": "src/Button/index.mdx",
+      "legacyId": "src-base-ui-button-demo-demos",
+      "legacyRouteId": "components/Button/index",
+      "options": {
+        "inline": false,
+        "isolated": false,
+        "layout": "default"
+      },
+      "pathname": "/components/button",
+      "source": "src/Button/demos/index.tsx"
+    },
+    {
+      "document": "src/Button/index.mdx",
+      "legacyId": "button, variant-demo-demos",
+      "legacyRouteId": "components/Button/index",
+      "options": {
+        "inline": false,
+        "isolated": false,
+        "layout": "default"
+      },
+      "pathname": "/components/button",
+      "source": "src/Button/demos/Variant.tsx"
+    }
+  ],
+  "documents": [
+    {
+      "category": "General",
+      "description": "Button triggers an action, with default, primary and text variants.",
+      "legacyRouteId": "components/Button/index",
+      "pathname": "/components/button",
+      "section": "Components",
+      "source": "src/Button/index.mdx",
+      "title": "Button"
+    }
+  ]
+}

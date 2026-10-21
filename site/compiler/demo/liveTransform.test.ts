@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import { fixturesRoot, playgroundRoot } from '../../../tests/roots';
 import { extractImmutableImports, transformLiveSource } from './liveTransform';
 
 describe('transformLiveSource', () => {
@@ -183,13 +184,12 @@ export default () => <Default value={renamed} namespace={Namespace} />;`;
     });
   });
 
-  it('transforms representative simple, StoryBook, and relative-helper repository demos', () => {
-    const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
+  it('transforms representative simple, StoryBook, and relative-helper demos', () => {
     const sources = [
-      'src/Flex/demos/basic.tsx',
-      'src/Button/demos/index.tsx',
-      'tests/fixtures/site/demos/local-import.tsx',
-    ].map((path) => readFileSync(resolve(repositoryRoot, path), 'utf8'));
+      resolve(playgroundRoot, 'src/Button/demos/index.tsx'),
+      resolve(playgroundRoot, 'src/Button/demos/Playground.tsx'),
+      resolve(fixturesRoot, 'demos/local-import.tsx'),
+    ].map((path) => readFileSync(path, 'utf8'));
 
     for (const source of sources) {
       expect(transformLiveSource(source, extractImmutableImports(source))).toMatchObject({

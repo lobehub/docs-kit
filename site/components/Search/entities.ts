@@ -16,7 +16,7 @@ export const decodeEntities = (input: string): string =>
         body[1] === 'x' || body[1] === 'X'
           ? Number.parseInt(body.slice(2), 16)
           : Number.parseInt(body.slice(1), 10);
-      if (!Number.isFinite(codePoint) || codePoint < 0 || codePoint > 0x10FFFF) return match;
+      if (!Number.isFinite(codePoint) || codePoint < 0 || codePoint > 0x10ffff) return match;
       try {
         return String.fromCodePoint(codePoint);
       } catch {

@@ -3,13 +3,13 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 
 import { getDocsConfig } from '../../src/config';
+import { playgroundRoot } from '../../tests/roots';
 import { buildDocumentationInventory, deriveAtomIdFromPaths } from './inventory';
 import type { DocumentationInventory } from './types';
 
-const realRoot = resolve(import.meta.dirname, '../../../..');
-const realConfig = getDocsConfig(realRoot);
+const realConfig = getDocsConfig(playgroundRoot);
 const buildRealInventory = (): DocumentationInventory =>
-  buildDocumentationInventory(realRoot, {
+  buildDocumentationInventory(playgroundRoot, {
     atomDirs: realConfig.atomDirs,
     legacyRedirects: realConfig.legacyRedirects,
     navSections: realConfig.navSections,
@@ -54,21 +54,32 @@ describe('documentation inventory', () => {
   it('selects public source docs while excluding internal specifications', () => {
     const inventory = buildRealInventory();
 
-    expect(inventory.documents.length).toBeGreaterThanOrEqual(166);
-    expect(inventory.demoReferences.length).toBeGreaterThanOrEqual(460);
-    expect(new Set(inventory.documents.map(({ pathname }) => pathname)).size).toBe(
-      inventory.documents.length,
-    );
+    expect(inventory.documents.map(({ source }) => source)).toEqual([
+      'docs/changelog.mdx',
+      'docs/guide.mdx',
+      'docs/index.mdx',
+      'src/Button/index.mdx',
+    ]);
     expect(new Set(inventory.demoReferences.map(({ legacyId }) => legacyId)).size).toBe(
       inventory.demoReferences.length,
     );
-    expect(inventory.documents.some(({ source }) => source.includes('/superpowers/'))).toBe(false);
+
+    const root = createFixture({
+      'docs/superpowers/specs/plan.md': '---\ntitle: Plan\n---\n',
+      'src/Fixture/index.md': '---\ntitle: Fixture\n---\n',
+    });
+
+    expect(
+      buildDocumentationInventory(root).documents.some(({ source }) =>
+        source.includes('/superpowers/'),
+      ),
+    ).toBe(false);
   });
 
   it('preserves duplicate-source demos as separate legacy aliases', () => {
     const inventory = buildRealInventory();
     const aliases = inventory.demoReferences.filter(
-      ({ source }) => source === 'src/DropdownMenu/demos/index.tsx',
+      ({ source }) => source === 'src/Button/demos/index.tsx',
     );
 
     expect(aliases.length).toBeGreaterThan(1);

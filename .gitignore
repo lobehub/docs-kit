@@ -1,0 +1,27 @@
+# dependencies
+node_modules
+
+# build output
+**/.react-router/
+dist
+
+# ci
+coverage
+.eslintcache
+
+# generated
+site/compiler/.cache/
+site/compiler/__fixtures__/
+react-router.config.mjs
+
+# husky
+.husky/_
+
+# misc
+.DS_Store
+.idea
+.vscode
+.history
+*.log
+.env.local
+.vitest/

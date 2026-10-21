@@ -4,7 +4,8 @@ import { resolve } from 'node:path';
 
 import { createServer, type ViteDevServer } from 'vite';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../../..');
+import { kitRoot } from '../../tests/roots';
+
 let server: ViteDevServer | undefined;
 
 afterEach(async () => {
@@ -14,7 +15,7 @@ afterEach(async () => {
 
 it('loads synchronous document metadata without compiling the MDX component', async () => {
   server = await createServer({
-    configFile: resolve(repositoryRoot, 'packages/docs-kit/vite.config.ts'),
+    configFile: resolve(kitRoot, 'vite.config.ts'),
     logLevel: 'silent',
     server: { middlewareMode: true },
   });
@@ -24,7 +25,7 @@ it('loads synchronous document metadata without compiling the MDX component', as
   expect(module.default).toMatchObject({
     pathname: '/',
     source: 'docs/index.mdx',
-    title: 'LobeHub UI Kit',
+    title: 'Docs Kit Playground',
   });
   expect(typeof module.default).toBe('object');
 });

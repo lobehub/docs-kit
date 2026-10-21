@@ -62,11 +62,7 @@
 
   .docs-content
     pre:not(
-      :where(
-        [data-code-type='highlighter'] *,
-        [data-code-type='live-demo'] *,
-        [data-demo-layout] *
-      )
+      :where([data-code-type='highlighter'] *, [data-code-type='live-demo'] *, [data-demo-layout] *)
     ) {
     overflow-x: auto;
 

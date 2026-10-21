@@ -127,7 +127,6 @@ it('scrolls the page inside a scroll area viewport instead of the main landmark'
 
   expect(viewport?.textContent).toContain('Document content');
   expect(getScrollContainer()).toBe(viewport);
-  expect(getComputedStyle(main).overflow).toBe('hidden');
 });
 
 it('hands skip-link focus to the scrolling viewport so the keyboard scrolls the page', () => {

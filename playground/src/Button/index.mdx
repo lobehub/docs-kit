@@ -1,0 +1,36 @@
+---
+title: Button
+description: Button triggers an action, with default, primary and text variants.
+category: General
+---
+
+import DemoIndex from './demos/index.tsx?demo';
+import DemoVariant from './demos/Variant.tsx?demo';
+import DemoDynamicImport from './demos/DynamicImport.tsx?demo';
+import DemoPlayground from './demos/Playground.tsx?demo';
+
+<Demo of={DemoIndex} title="Basic" />
+
+## Playground
+
+<Demo of={DemoPlayground} layout="bare" />
+
+## Variants
+
+<Demo of={DemoVariant} title="Variants" />
+
+## Lazy content
+
+<Demo editable={false} of={DemoDynamicImport} />
+
+## Props
+
+| Property   | Description                 | Type                                 |
+| ---------- | --------------------------- | ------------------------------------ |
+| `htmlType` | Native button type          | `'button' \| 'reset' \| 'submit'`    |
+| `rest`     | Remaining native attributes | `Omit<ButtonHTMLAttributes, 'type'>` |
+| `variant`  | Visual weight               | `'default' \| 'primary' \| 'text'`   |
+
+## API
+
+<Api name="Button" />

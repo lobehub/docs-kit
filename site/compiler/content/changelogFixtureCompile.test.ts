@@ -6,7 +6,8 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer, type ViteDevServer } from 'vite';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../../../..');
+import { fixturesRoot, kitRoot } from '../../../tests/roots';
+
 const nonBreakingSpace = ' ';
 let server: ViteDevServer | undefined;
 
@@ -17,13 +18,13 @@ afterEach(async () => {
 
 it('compiles a realistic changelog excerpt through the production mdx pipeline', async () => {
   server = await createServer({
-    configFile: resolve(repositoryRoot, 'packages/docs-kit/vite.config.ts'),
+    configFile: resolve(kitRoot, 'vite.config.ts'),
     logLevel: 'silent',
     server: { middlewareMode: true },
   });
 
   const module = await server.ssrLoadModule(
-    '/tests/fixtures/site/content/changelog-realistic-excerpt.md',
+    `/@fs${fixturesRoot}/content/changelog-realistic-excerpt.md`,
   );
   const html = renderToStaticMarkup(createElement(module.default));
 

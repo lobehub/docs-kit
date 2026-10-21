@@ -4,14 +4,11 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
 import { clearDocsConfigCache } from '../../src/config';
+import { kitRoot } from '../../tests/roots';
 import { lobeDocsSiteConfigPlugin } from './vitePlugin';
 
-const repositoryRoot = resolve(import.meta.dirname, '../../../..');
-const defaultHomePagePath = resolve(
-  repositoryRoot,
-  'packages/docs-kit/site/components/Home/DefaultHome.tsx',
-);
-const temporaryRootParent = resolve(repositoryRoot, 'node_modules/.tmp-home-page-virtual-module');
+const defaultHomePagePath = resolve(kitRoot, 'site/components/Home/DefaultHome.tsx');
+const temporaryRootParent = resolve(kitRoot, 'node_modules/.tmp-home-page-virtual-module');
 mkdirSync(temporaryRootParent, { recursive: true });
 
 const temporaryRoots: string[] = [];

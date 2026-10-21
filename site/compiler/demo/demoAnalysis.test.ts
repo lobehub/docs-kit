@@ -4,9 +4,10 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 
+import { fixturesRoot } from '../../../tests/roots';
 import { analyzeDemo } from './demoAnalysis';
 
-const fixtureRoot = resolve(import.meta.dirname, '../../../../../tests/fixtures/site/demos');
+const fixtureRoot = resolve(fixturesRoot, 'demos');
 const temporaryRoots: string[] = [];
 
 const createFixture = (files: Record<string, string>): string => {
