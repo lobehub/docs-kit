@@ -4,11 +4,11 @@
 
 ![](https://github.com/lobehub/docs-kit/raw/main/.github/assets/banner.png)
 
-<h1>LobeHub Docs Kit</h1>
+<h1>📖 Docs Kit</h1>
 
-<h3>The Docs Kit for Component Libraries</h3>
+<h3>The Documentation Kit for React Component Libraries</h3>
 
-LobeHub's documentation toolkit and `lobedocs` CLI for React component library sites.
+LobeHub's documentation toolkit and `lobedocs` CLI. Write MDX next to your React components and get a prerendered docs site with live demos, API tables, search, `skills.md` and `llms.txt`.
 
 [Live Example](https://ui.lobehub.com) · [Changelog](./CHANGELOG.md) · [Report Bug][github-issues-link] · [Request Feature][github-issues-link]
 
@@ -36,10 +36,9 @@ LobeHub's documentation toolkit and `lobedocs` CLI for React component library s
 - [✨ Why Docs Kit?](#-why-docs-kit)
 - [🚀 Getting Started](#-getting-started)
 - [📝 Writing Docs](#-writing-docs)
-- [⚙️ Configuration](#️-configuration)
-- [🤖 AI-Native Docs](#-ai-native-docs)
-- [🏗️ Architecture](#️-architecture)
-- [⌨️ Local Development](#️-local-development)
+- [⌨️ lobedocs CLI](#️-lobedocs-cli)
+- [🤖 For AI Agents](#-for-ai-agents)
+- [🛠️ Local Development](#️-local-development)
 - [🤝 Contributing](#-contributing)
 - [🩷 Sponsor](#-sponsor)
 - [🔗 Links](#-links)
@@ -50,14 +49,14 @@ LobeHub's documentation toolkit and `lobedocs` CLI for React component library s
 
 ## ✨ Why Docs Kit?
 
-Docs Kit is the documentation stack behind [ui.lobehub.com](https://ui.lobehub.com). It takes over from `dumi` + `dumi-theme-lobehub` as one installable package: a React Router + Vite static site that your repo only feeds with content and a config file.
+Docs Kit is the documentation stack behind [ui.lobehub.com](https://ui.lobehub.com) and the other LobeHub component library sites. It replaces `dumi` + `dumi-theme-lobehub` with one installable package: your repo keeps the content and a config file, and the `lobedocs` CLI does the rest.
 
-- **Zero build config**: no `vite.config.ts` or `react-router.config.ts` in your repo; the `lobedocs` CLI owns them.
-- **Docs next to code**: every `src/**/index.mdx` becomes a component page, with live, editable `<Demo />` blocks and standalone `/~demos/:id` routes.
+- **Zero build config**: no `vite.config.ts` or `react-router.config.ts` in your repo; the CLI owns them.
+- **Docs next to code**: every `src/**/index.mdx` becomes a component page with live, editable `<Demo />` blocks.
 - **API tables from TypeScript**: `<Api name="Button" />` reads props, JSDoc and `@default` from your types, and the build fails when a default drifts from runtime.
 - **Static and fast**: every page is prerendered, with Pagefind search, a sitemap and Open Graph tags built in.
-- **AI-native**: `/llms.txt` and `/skills.md` are generated from the same MDX, so coding agents read the docs your users read.
-- **LobeHub look**: built on [`@lobehub/ui`](https://github.com/lobehub/lobe-ui) with light and dark themes; giscus comments and Plausible analytics are one config field away.
+- **Audited builds**: broken links, missing demos and wrong API defaults fail `lobedocs build` instead of reaching readers.
+- **AI-native**: `skills.md` and `llms.txt` are generated from the same MDX, so coding agents read the docs your users read.
 
 <div align="right">
 
@@ -73,7 +72,7 @@ Docs Kit is the documentation stack behind [ui.lobehub.com](https://ui.lobehub.c
 $ pnpm add -D @lobehub/docs-kit @react-router/dev react-router vite tsx
 ```
 
-Docs Kit needs Node.js >= 22.22, React 19, React Router 8.2+ and Vite 8.1+. Add the scripts:
+Docs Kit needs Node.js >= 22.22, React 19, React Router 8.2+ and Vite 8.1+. Add the scripts to your component library's `package.json`:
 
 ```json
 {
@@ -85,36 +84,26 @@ Docs Kit needs Node.js >= 22.22, React 19, React Router 8.2+ and Vite 8.1+. Add 
 }
 ```
 
-A consumer repo holds only content and a config file:
-
-```
-<repo>/
-  docs.config.ts         # site config, see Configuration
-  src/**/index.mdx       # component docs, per configured atomDirs
-  src/**/demos/*.tsx     # demos embedded with <Demo />
-  docs/**                # guide pages (docs/index.mdx -> "/", docs/changelog.mdx -> "/changelog")
-  public/                # static assets served at "/"
-  CHANGELOG.md           # rendered at "/changelog" when docs/changelog.mdx is absent
-```
+Then add a `docs.config.ts` at the repo root and a `docs/index.mdx` with `title` and `description` frontmatter:
 
 ```ts
 // docs.config.ts
 export default {
   atomDirs: [{ dir: 'src' }],
-  title: 'Lobe UI',
-  description: 'A modern React component library for building LobeHub products.',
-  siteUrl: 'https://ui.lobehub.com',
+  title: 'Lobe Editor',
+  description: 'One sentence describing the library.',
+  siteUrl: 'https://editor.lobehub.com',
+  alias: { '@lobehub/editor': 'src' }, // demos import the package by name, run from source
   themeConfig: {
-    socialLinks: [{ href: 'https://github.com/lobehub/lobe-ui', icon: 'github', label: 'GitHub' }],
+    apiHeader: { packageName: '@lobehub/editor', github: 'https://github.com/lobehub/lobe-editor' },
+    socialLinks: [
+      { href: 'https://github.com/lobehub/lobe-editor', icon: 'github', label: 'GitHub' },
+    ],
   },
 };
 ```
 
-| Command            | What it does                                                    |
-| ------------------ | --------------------------------------------------------------- |
-| `lobedocs dev`     | Start the dev server                                            |
-| `lobedocs build`   | Build and prerender the static site into `dist/`, then audit it |
-| `lobedocs typegen` | Generate React Router route types                               |
+Run `pnpm docs:dev` and open the printed URL. Every config field, including the sidebar, home page, theme, giscus and analytics options, is typed in [`src/config.ts`](./src/config.ts).
 
 <div align="right">
 
@@ -134,13 +123,8 @@ category: General
 ---
 
 import Basic from './demos/index.tsx?demo';
-import Variants from './demos/Variants.tsx?demo';
 
 <Demo of={Basic} title="Basic usage" />
-
-## Variants
-
-<Demo of={Variants} title="Variants" />
 
 ## API
 
@@ -149,8 +133,8 @@ import Variants from './demos/Variants.tsx?demo';
 
 - Only files named `index.mdx` under an `atomDirs` root become pages; the URL comes from the folder (`src/chat/ChatItem` → `/components/chat/chat-item`).
 - Each demo file has one default export and lives under `src/**/demos/`.
-- `<Api>` resolves the component through the nearest `index.ts`; write JSDoc and a matching `@default` on every prop.
-- Guide pages under `docs/` need a `title` and `description`, and must be listed in `publicDocs`.
+- Guide pages are `docs/**/*.mdx` files listed in `publicDocs`; `themeConfig.sidebarGroups` gives them a sidebar section.
+- A custom landing page is any module set as `homePage`, for example one built from `@lobehub/ui/awesome`.
 
 <div align="right">
 
@@ -158,45 +142,39 @@ import Variants from './demos/Variants.tsx?demo';
 
 </div>
 
-## ⚙️ Configuration
+## ⌨️ lobedocs CLI
 
-| Field                                  | Type                                                 | Purpose                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| -------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `atomDirs`                             | `{ dir: string; type?: string; subType?: string }[]` | Scan roots for component docs (multiple roots support per-repo layouts, e.g. `src/react`, `src/plugins`)                                                                                                                                                                                                                                                                                                                                                            |
-| `title` / `description`                | `string`                                             | Site metadata, used in `<title>`/meta tags and OpenGraph                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `siteUrl`                              | `string`                                             | Canonical origin, used for sitemap/OG/canonical links                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `navSections?`                         | `Record<string, string>`                             | Section overrides keyed by doc source. Sections are derived from the document's directory, so this is only for a page sitting outside its section's namespace                                                                                                                                                                                                                                                                                                       |
-| `legacyRedirects`                      | `DocumentationInventory`                             | Optional old-URL -> new-URL redirect map (replaces `compatibility.json`)                                                                                                                                                                                                                                                                                                                                                                                            |
-| `alias`                                | `Record<string, string>`                             | Module aliases forwarded to Vite                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `favicons`                             | `Record<string, string>`                             | Favicon link hrefs, keyed `icon` / `icon16` / `icon32` / `appleTouchIcon`. Each key defaults to the LobeHub favicon if omitted.                                                                                                                                                                                                                                                                                                                                     |
-| `themeConfig.navItems`                 | `DocsNavItem[]`                                      | Extra top-level sidebar links, after Home and before the skills.md, llms.txt and Changelog links. `external: true` opens in a new tab. `icon` takes a lucide icon name in kebab-case (`'palette'`), loaded on demand; without it the link gets a document icon.                                                                                                                                                                                                     |
-| `themeConfig.actions`                  | `DocsNavItem[]`                                      | Extra text links rendered in the top bar's tools, before the theme switcher.                                                                                                                                                                                                                                                                                                                                                                                        |
-| `themeConfig.socialLinks`              | `DocsSocialLink[]`                                   | The entry with `icon: 'github'` renders as the top bar's icon-only GitHub button.                                                                                                                                                                                                                                                                                                                                                                                   |
-| `themeConfig.giscus`                   | `{ repo, repoId, category, categoryId }`             | Giscus comments shown at the end of every page.                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `themeConfig.analytics.plausible`      | `{ domain, source }`                                 | Plausible analytics script injection                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `themeConfig.apiHeader`                | `{ docUrl?, sourceUrl?, github?, match?: string[] }` | Derives each component doc's "Source" and "Edit" links. `docUrl`/`sourceUrl` are templates supporting `{github}` (the `github` field, a repo base URL) and `{atomId}` (the doc's source path for `docUrl`, its containing directory for `sourceUrl`) placeholders — default to `{github}/edit/master/{atomId}` and `{github}/tree/master/{atomId}`. `match` optionally scopes which document pathnames get Source/Edit links (defaults to every `src/**` document). |
-| `themeConfig.prefersColor`             | `'auto' \| 'dark' \| 'light'`                        | Default color scheme. `'auto'` (default) follows system preference and shows the top bar's light/dark/system switcher; `'dark'`/`'light'` forces that scheme and hides the switcher.                                                                                                                                                                                                                                                                                |
-| `themeConfig.metadata.openGraph.image` | `string`                                             | Default OG image                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Command            | What it does                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------------- |
+| `lobedocs dev`     | Start the dev server with hot reload for MDX, demos and components                            |
+| `lobedocs build`   | Prerender every page, build the search index and agent files, audit the result, write `dist/` |
+| `lobedocs typegen` | Generate React Router route types into `.react-router/types`                                  |
 
-`docs.config.ts` is loaded once per process (in a `node --import tsx` subprocess) and reaches the app through Vite virtual modules, so restart `lobedocs dev` after editing it.
+Extra arguments are forwarded to React Router, e.g. `lobedocs dev --port 3000`. `dist/` is plain static HTML that any static host can serve. Restart `lobedocs dev` after editing `docs.config.ts`.
 
-### React Router overrides
+<div align="right">
 
-The CLI supplies a React Router config for the lifetime of each command, guarded by cross-process leases when several `lobedocs` commands run at once. To change it, add a `react-router.config.ts` built from the exported defaults; a consumer-authored config always wins and is never modified:
+[![][back-to-top]](#readme-top)
 
-```ts
-import { defineLobeDocsReactRouterConfig } from '@lobehub/docs-kit/react-router-config';
+</div>
 
-export default defineLobeDocsReactRouterConfig({
-  basename: '/docs',
-});
+## 🤖 For AI Agents
+
+Every Docs Kit site serves files for coding agents, generated from the same MDX as the pages. `lobedocs dev` serves them live, and `lobedocs build` writes them into `dist/`:
+
+| File                | What it contains                                                                                   |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| `/skills.md`        | Agent skill entry point: site config, folder architecture and the prose of every page              |
+| `/skills/<page>.md` | One Markdown reference per page, e.g. `/skills/components/button.md`                               |
+| `/llms.txt`         | [llms.txt](https://llmstxt.org) index with each page's description, category, outline and docs URL |
+
+Point an agent at the `skills.md` of the library you use, for example:
+
+```text
+Read https://ui.lobehub.com/skills.md, then build a settings page with @lobehub/ui. Only use components, props and imports documented there.
 ```
 
-The `lobedocs` CLI and `@lobehub/docs-kit/react-router-config` are the supported entry points; other deep imports are not stable yet.
-
-### Changelog
-
-`/changelog` renders `docs/changelog.mdx` when it exists. Without it, the kit renders the root `CHANGELOG.md` directly, with no frontmatter or nav config needed.
+Working on this repository with an agent? Start from [AGENTS.md](./AGENTS.md).
 
 <div align="right">
 
@@ -204,41 +182,7 @@ The `lobedocs` CLI and `@lobehub/docs-kit/react-router-config` are the supported
 
 </div>
 
-## 🤖 AI-Native Docs
-
-Every site serves two generated text routes, rebuilt from `docs.config.ts`, the folder layout under `atomDirs` and the MDX source of each page:
-
-| Route        | What it contains                                                                                                                                                                                                                                                                                         |
-| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/llms.txt`  | [llms.txt](https://llmstxt.org/) index. The title and summary come from config. Sections follow atom directories and component folders (`navSections` overrides a folder). Each entry links to the assembled markdown and records the MDX description, category, heading outline, and rendered docs URL. |
-| `/skills.md` | Agent skill for the same corpus: config, folder architecture, and the MDX prose for every page. Import lines and component tags such as `<Demo />` and `<Api />` are left out; headings, paragraphs, tables, and fenced code stay.                                                                       |
-
-Both routes work in `lobedocs dev` and are prerendered into the static build. HTML pages link to `/llms.txt` with `rel="describedby"`.
-
-<div align="right">
-
-[![][back-to-top]](#readme-top)
-
-</div>
-
-## 🏗️ Architecture
-
-| Path               | What it is                                                                                            |
-| ------------------ | ----------------------------------------------------------------------------------------------------- |
-| `bin/`, `src/cli/` | The `lobedocs` CLI                                                                                    |
-| `src/config.ts`    | `docs.config.ts` types, loading and caching                                                           |
-| `site/compiler/`   | Content inventory, demo pipeline, TypeScript API extraction, Pagefind search, SEO, build finalization |
-| `site/app/`        | Routes, providers and the docs shell; reads the consumer config through virtual modules               |
-| `site/components/` | Docs UI: layout, demos, API tables, search, table of contents                                         |
-| `playground/`      | A minimal consumer used for local development, compiler tests and the CI build                        |
-
-<div align="right">
-
-[![][back-to-top]](#readme-top)
-
-</div>
-
-## ⌨️ Local Development
+## 🛠️ Local Development
 
 You can use Github Codespaces for online development:
 
@@ -253,15 +197,7 @@ $ pnpm install
 $ pnpm dev
 ```
 
-| Command                 | What it does                                       |
-| ----------------------- | -------------------------------------------------- |
-| `pnpm dev`              | `lobedocs dev` against `playground/`               |
-| `pnpm build:playground` | Full static build of `playground/`                 |
-| `pnpm test`             | Vitest, run with `playground/` as the consumer cwd |
-| `pnpm lint`             | ESLint                                             |
-| `pnpm type-check`       | TypeScript                                         |
-
-Commits follow gitmoji + conventional commits; semantic-release publishes to npm from `main`.
+`pnpm dev` runs `lobedocs dev` against [`playground/`](./playground), a consumer site that documents how to use the kit. `pnpm build:playground`, `pnpm test`, `pnpm lint` and `pnpm type-check` are what CI runs.
 
 <div align="right">
 
