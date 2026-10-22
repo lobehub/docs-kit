@@ -58,7 +58,7 @@ const validDocumentHtml = () => `<!doctype html><html><head>
 <meta property="og:url" content="${buttonUrl}">
 <meta property="og:image" content="${siteMetadata.openGraphImage}">
 <meta name="twitter:card" content="summary_large_image">
-</head><body><article data-pagefind-body><h1 id="button">Button</h1><h2 id="usage">Usage</h2><a href="#usage">Usage</a></article></body></html>`;
+${siteMetadata.openGraphImage ? `<meta name="twitter:image" content="${siteMetadata.openGraphImage}">\n` : ''}</head><body><article data-pagefind-body><h1 id="button">Button</h1><h2 id="usage">Usage</h2><a href="#usage">Usage</a></article></body></html>`;
 
 const createValidFixture = (withData = false) => {
   const root = mkdtempSync(path.resolve(tmpdir(), 'lobe-ui-artifact-'));

@@ -6,6 +6,7 @@ import siteConfig from 'virtual:lobedocs/site-config';
 import { styles } from '../../components/Home/homeStyle';
 import { sectionLandingPathname } from '../../content/pageChrome';
 import { formatPageTitle } from '../../content/pageTitle';
+import { twitterImageMeta } from '../../content/socialImage';
 import { contentManifest, findDocument } from '../content/registry';
 
 export const meta: MetaFunction = () => {
@@ -27,6 +28,7 @@ export const meta: MetaFunction = () => {
     { content: canonicalUrl, property: 'og:url' },
     { content: openGraphImage, property: 'og:image' },
     { content: 'summary_large_image', name: 'twitter:card' },
+    ...twitterImageMeta(openGraphImage),
   ];
 };
 

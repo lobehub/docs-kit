@@ -218,6 +218,18 @@ const auditDocumentMetadata = (
   if (content($, 'meta[name="twitter:card"]') !== 'summary_large_image') {
     diagnostics.push(`${label}: twitter:card metadata must be summary_large_image.`);
   }
+  const twitterImage = $('meta[name="twitter:image"]').first().attr('content')?.trim();
+  if (
+    siteMetadata.openGraphImage
+      ? twitterImage !== siteMetadata.openGraphImage
+      : twitterImage !== undefined
+  ) {
+    diagnostics.push(
+      siteMetadata.openGraphImage
+        ? `${label}: twitter:image must repeat the Open Graph image ${siteMetadata.openGraphImage}.`
+        : `${label}: twitter:image must be omitted when no Open Graph image is configured.`,
+    );
+  }
   if ($('article[data-pagefind-body]').length !== 1) {
     diagnostics.push(`${label}: expected exactly one article[data-pagefind-body].`);
   }

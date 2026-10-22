@@ -64,6 +64,13 @@ it('emits absolute canonical, Open Graph, and Twitter metadata for a document', 
       { content: 'summary_large_image', name: 'twitter:card' },
     ]),
   );
+  expect(
+    descriptors.filter((descriptor) => 'name' in descriptor && descriptor.name === 'twitter:image'),
+  ).toEqual(
+    siteMetadata.openGraphImage
+      ? [{ content: siteMetadata.openGraphImage, name: 'twitter:image' }]
+      : [],
+  );
 });
 
 it('shows the site title once when a page is titled after the site', () => {

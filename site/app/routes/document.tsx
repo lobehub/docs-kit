@@ -8,6 +8,7 @@ import { overviewMeta } from '../../components/SectionOverview/meta';
 import { SectionOverview } from '../../components/SectionOverview/SectionOverview';
 import { formatPageTitle } from '../../content/pageTitle';
 import { findOverview } from '../../content/sectionOverview';
+import { twitterImageMeta } from '../../content/socialImage';
 import { contentManifest, findDocument, loadDocument } from '../content/registry';
 import NotFound from './not-found';
 
@@ -39,6 +40,7 @@ export const meta: MetaFunction = ({ location }) => {
     { content: canonicalUrl, property: 'og:url' },
     { content: openGraphImage, property: 'og:image' },
     { content: 'summary_large_image', name: 'twitter:card' },
+    ...twitterImageMeta(openGraphImage),
   ];
 };
 
