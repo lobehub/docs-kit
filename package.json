@@ -41,7 +41,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsrs --noEmit"
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",
@@ -90,6 +90,7 @@
     "react-dom": "^19.2.7",
     "react-router": "8.4.0",
     "semantic-release": "^25.0.9",
+    "tsrs": "0.18.0-ts7.1.0-dev.20260929",
     "tsx": "^4.23.15",
     "vite": "8.3.4",
     "vitest": "^5.0.4"
