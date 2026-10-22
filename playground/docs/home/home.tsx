@@ -90,10 +90,10 @@ export default function Home({
         onNavigate={navigate}
       >
         <LogoMarquee
+          items={STATIC_HOSTS}
           caption={
             <Link to="/guide/build-and-deploy">Static HTML in dist/, ready for any host</Link>
           }
-          items={STATIC_HOSTS}
         />
       </LandingHero>
 

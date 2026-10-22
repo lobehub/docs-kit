@@ -1,7 +1,7 @@
 import { Flexbox, Highlighter, Hotkey, Segmented, Snippet } from '@lobehub/ui';
 import { BentoCard, BentoGrid } from '@lobehub/ui/awesome';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 
 import DemoPreview from './DemoPreview.mdx';
 import { renderLink } from './renderLink';
@@ -12,10 +12,16 @@ description: Button triggers an action.
 category: General
 ---`;
 
+const subscribeToNothing = () => () => {};
+
 function ThemeSwitchTile() {
   const { setTheme, theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  // false while prerendering and hydrating, true afterwards: the stored theme is only known in the browser
+  const mounted = useSyncExternalStore(
+    subscribeToNothing,
+    () => true,
+    () => false,
+  );
   const preference = mounted && (theme === 'light' || theme === 'dark') ? theme : 'system';
 
   return (
@@ -35,18 +41,16 @@ function LlmsTxtTile() {
   const [excerpt, setExcerpt] = useState('Loading /llms.txt…');
 
   useEffect(() => {
-    let cancelled = false;
-    fetch('/llms.txt')
+    const controller = new AbortController();
+    fetch('/llms.txt', { signal: controller.signal })
       .then((response) => (response.ok ? response.text() : Promise.reject(response.status)))
-      .then((text) => {
-        if (!cancelled) setExcerpt(text.split('\n').slice(0, 7).join('\n').trim());
-      })
+      .then((text) => setExcerpt(text.split('\n').slice(0, 7).join('\n').trim()))
       .catch(() => {
-        if (!cancelled) setExcerpt('Open /llms.txt to read the index of this site.');
+        if (!controller.signal.aborted) {
+          setExcerpt('Open /llms.txt to read the index of this site.');
+        }
       });
-    return () => {
-      cancelled = true;
-    };
+    return () => controller.abort();
   }, []);
 
   return (
