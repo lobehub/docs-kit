@@ -37,7 +37,7 @@ LobeHub's documentation toolkit and `lobedocs` CLI. Write MDX next to your React
 - [🚀 Getting Started](#-getting-started)
 - [📝 Writing Docs](#-writing-docs)
 - [⌨️ lobedocs CLI](#️-lobedocs-cli)
-- [🤖 For AI Agents](#-for-ai-agents)
+- [🤖 AI-Powered Development](#-ai-powered-development)
 - [🛠️ Local Development](#️-local-development)
 - [🤝 Contributing](#-contributing)
 - [🩷 Sponsor](#-sponsor)
@@ -56,7 +56,7 @@ Docs Kit is the documentation stack behind [ui.lobehub.com](https://ui.lobehub.c
 - **API tables from TypeScript**: `<Api name="Button" />` reads props, JSDoc and `@default` from your types, and the build fails when a default drifts from runtime.
 - **Static and fast**: every page is prerendered, with Pagefind search, a sitemap and Open Graph tags built in.
 - **Audited builds**: broken links, missing demos and wrong API defaults fail `lobedocs build` instead of reaching readers.
-- **AI-native**: `skills.md` and `llms.txt` are generated from the same MDX, so coding agents read the docs your users read.
+- **AI-native docs**: coding agents read every page through [skills.md][skills-md-link] and [llms.txt][llms-txt-link], generated from the same MDX your users read.
 
 <div align="right">
 
@@ -158,21 +158,24 @@ Extra arguments are forwarded to React Router, e.g. `lobedocs dev --port 3000`. 
 
 </div>
 
-## 🤖 For AI Agents
+## 🤖 AI-Powered Development
 
-Every Docs Kit site serves files for coding agents, generated from the same MDX as the pages. `lobedocs dev` serves them live, and `lobedocs build` writes them into `dist/`:
+Docs Kit's docs are generated for coding agents as well as people. `lobedocs dev` serves them live, and `lobedocs build` writes them into `dist/`:
 
-| File                | What it contains                                                                                   |
-| ------------------- | -------------------------------------------------------------------------------------------------- |
-| `/skills.md`        | Agent skill entry point: site config, folder architecture and the prose of every page              |
-| `/skills/<page>.md` | One Markdown reference per page, e.g. `/skills/components/button.md`                               |
-| `/llms.txt`         | [llms.txt](https://llmstxt.org) index with each page's description, category, outline and docs URL |
+| Resource                                                                                  | What it does                                                                                      |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| [skills.md][skills-md-link]                                                               | Agent skill entry point: site config, folder architecture and a Markdown reference for every page |
+| [llms.txt][llms-txt-link]                                                                 | Page index with outlines for [llms.txt](https://llmstxt.org)-aware tools                          |
+| [Button skill](https://docs-kit.lobehub.com/skills/components/button.md)                  | Example per-page Markdown reference (`/skills/<page>.md`), with usage, demos and props            |
+| [Introduction skill](https://docs-kit.lobehub.com/skills/getting-started/introduction.md) | Example guide-page skill for getting started                                                      |
 
-Point an agent at the `skills.md` of the library you use, for example:
+Paste this into Cursor, Claude Code, Codex or any other coding agent:
 
 ```text
-Read https://ui.lobehub.com/skills.md, then build a settings page with @lobehub/ui. Only use components, props and imports documented there.
+Read https://docs-kit.lobehub.com/skills.md, then use @lobehub/docs-kit to set up a documentation site for my React component library. Follow the installation, docs.config.ts and component-page conventions documented there.
 ```
+
+Works with Cursor, Claude Code, Windsurf, GitHub Copilot and other llms.txt-aware tools.
 
 Working on this repository with an agent? Start from [AGENTS.md](./AGENTS.md).
 
@@ -300,4 +303,6 @@ This project is [MIT](./LICENSE) licensed.
 [pnpm-shield]: https://img.shields.io/badge/-pnpm-F69220?logo=pnpm&style=for-the-badge
 [pr-welcome-link]: https://github.com/lobehub/docs-kit/pulls
 [pr-welcome-shield]: https://img.shields.io/badge/🤯_pr_welcome-%E2%86%92-ffcb47?labelColor=black&style=for-the-badge
+[llms-txt-link]: https://docs-kit.lobehub.com/llms.txt
 [profile-link]: https://github.com/lobehub
+[skills-md-link]: https://docs-kit.lobehub.com/skills.md
