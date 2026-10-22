@@ -2,6 +2,23 @@
 
 # Changelog
 
+## [6.3.1](https://github.com/lobehub/docs-kit/compare/v6.3.0...v6.3.1) (2026-10-22)
+
+
+### 🎫 Chores
+
+* Deploy playground to Vercel ([5295979](https://github.com/lobehub/docs-kit/commit/5295979))
+
+
+### 💄 Styles
+
+* **playground**: Use the same favicon as lobe-ui ([585ed92](https://github.com/lobehub/docs-kit/commit/585ed92))
+
+
+### 📝 Documentation
+
+* Document skills.md and llms.txt like peer libraries ([6b23928](https://github.com/lobehub/docs-kit/commit/6b23928))
+
 # [6.3.0](https://github.com/lobehub/docs-kit/compare/v6.2.1...v6.3.0) (2026-10-22)
 
 
