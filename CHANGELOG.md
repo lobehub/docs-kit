@@ -2,6 +2,38 @@
 
 # Changelog
 
+# [6.3.0](https://github.com/lobehub/docs-kit/compare/v6.2.1...v6.3.0) (2026-10-22)
+
+
+### ✨ Features
+
+* **meta**: Emit twitter:image for the configured social preview image ([876d695](https://github.com/lobehub/docs-kit/commit/876d695))
+* **playground**: Rebuild playground as docs-kit introduction site ([40c7d83](https://github.com/lobehub/docs-kit/commit/40c7d83))
+
+
+### 🎫 Chores
+
+* **type-check**: Switch to tsrs ([a6d6536](https://github.com/lobehub/docs-kit/commit/a6d6536))
+* Extract docs-kit into a standalone repository ([3d1efb9](https://github.com/lobehub/docs-kit/commit/3d1efb9))
+
+
+### 🐛 Bug Fixes
+
+* **meta**: Show the site title once when a page is titled after the site ([036d74b](https://github.com/lobehub/docs-kit/commit/036d74b))
+* **playground**: Clear lint warnings in the landing page ([b22f5a0](https://github.com/lobehub/docs-kit/commit/b22f5a0))
+
+
+### 💄 Styles
+
+* Use GitHub social preview as OG image ([4fbe3c3](https://github.com/lobehub/docs-kit/commit/4fbe3c3))
+
+
+### 📝 Documentation
+
+* Align README with lobe-ui and add banner ([bbcdff6](https://github.com/lobehub/docs-kit/commit/bbcdff6))
+* Refresh README and add AGENTS.md ([8b8dc03](https://github.com/lobehub/docs-kit/commit/8b8dc03))
+* Sync Links with all nine LobeHub libraries ([68cc50b](https://github.com/lobehub/docs-kit/commit/68cc50b))
+
 ## [6.2.1](https://github.com/lobehub/lobe-ui/compare/docs-kit@6.2.0...docs-kit@6.2.1) (2026-10-21)
 
 ### 🐛 Bug Fixes
