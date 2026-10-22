@@ -10,7 +10,7 @@
 
 LobeHub's documentation toolkit and `lobedocs` CLI. Write MDX next to your React components and get a prerendered docs site with live demos, API tables, search, `skills.md` and `llms.txt`.
 
-[Live Example](https://ui.lobehub.com) · [Changelog](./CHANGELOG.md) · [Report Bug][github-issues-link] · [Request Feature][github-issues-link]
+[Live Example](https://docs-kit.lobehub.com) · [Changelog](./CHANGELOG.md) · [Report Bug][github-issues-link] · [Request Feature][github-issues-link]
 
 <!-- SHIELD GROUP -->
 

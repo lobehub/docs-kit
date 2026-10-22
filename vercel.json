@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "export PATH=\"$(printf '%s' \"$PATH\" | tr ':' '\\n' | grep -v '/pnpm6' | paste -sd: -)\" && pnpm run build:playground",
+  "devCommand": "pnpm run dev",
+  "framework": null,
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet -- ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./patches ./bin ./src ./site ./playground ./CHANGELOG.md ./react-router-config.ts ./vite.config.ts ./tsconfig.json ./vercel.json",
+  "installCommand": "export PATH=\"$(printf '%s' \"$PATH\" | tr ':' '\\n' | grep -v '/pnpm6' | paste -sd: -)\" && corepack enable && pnpm install",
+  "outputDirectory": "playground/dist",
+  "trailingSlash": false
+}
