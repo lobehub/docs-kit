@@ -6,6 +6,7 @@ import siteConfig from 'virtual:lobedocs/site-config';
 import { DocsLayout } from '../../components/DocsLayout/DocsLayout';
 import { overviewMeta } from '../../components/SectionOverview/meta';
 import { SectionOverview } from '../../components/SectionOverview/SectionOverview';
+import { formatPageTitle } from '../../content/pageTitle';
 import { findOverview } from '../../content/sectionOverview';
 import { contentManifest, findDocument, loadDocument } from '../content/registry';
 import NotFound from './not-found';
@@ -22,7 +23,7 @@ export const meta: MetaFunction = ({ location }) => {
     ];
   }
 
-  const title = `${document.title} - ${siteConfig.title}`;
+  const title = formatPageTitle(document.title, siteConfig.title);
   const canonicalUrl = new URL(document.pathname, siteConfig.siteUrl).href;
   const openGraphImage = siteConfig.themeConfig?.metadata?.openGraph?.image ?? '';
 

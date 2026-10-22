@@ -4,6 +4,7 @@ import path from 'node:path';
 import { type CheerioAPI, load } from 'cheerio';
 import ts from 'typescript';
 
+import { formatPageTitle } from '../../content/pageTitle';
 import { siteMetadata } from '../../content/siteMetadata';
 import type { DocumentManifestEntry } from '../../types/content';
 import { agentPagePathname, listAgentPagePathnames } from '../agent/assembleAgentDocs';
@@ -186,7 +187,7 @@ const auditDocumentMetadata = (
   diagnostics: string[],
 ): void => {
   const label = path.relative(path.dirname(path.dirname(file)), file).replaceAll(path.sep, '/');
-  const expectedTitle = `${document.title} - ${siteMetadata.name}`;
+  const expectedTitle = formatPageTitle(document.title, siteMetadata.name);
   const expectedCanonical = new URL(document.pathname, siteMetadata.origin).href;
   const title = $('title').first().text().trim();
   if (title !== expectedTitle) {

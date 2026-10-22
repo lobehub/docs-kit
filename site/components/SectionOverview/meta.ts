@@ -1,6 +1,7 @@
 import type { MetaDescriptor } from 'react-router';
 import siteConfig from 'virtual:lobedocs/site-config';
 
+import { formatPageTitle } from '../../content/pageTitle';
 import type { OverviewMatch } from '../../content/sectionOverview';
 
 export function overviewMeta(
@@ -8,7 +9,7 @@ export function overviewMeta(
   pathname: string,
 ): MetaDescriptor[] {
   const heading = category ? `${category.title} - ${section.title}` : section.title;
-  const title = `${heading} - ${siteConfig.title}`;
+  const title = formatPageTitle(heading, siteConfig.title);
   const description = `Browse ${heading} documentation in ${siteConfig.title}.`;
   const canonicalUrl = new URL(pathname.replace(/\/+$/, ''), siteConfig.siteUrl).href;
 

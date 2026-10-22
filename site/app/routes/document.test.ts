@@ -20,7 +20,13 @@ vi.mock('../content/registry', () => ({
       return [{ categories: [{ documents: [document], title: 'General' }], title: 'Components' }];
     },
   },
-  findDocument: (pathname: string) => (pathname === '/components/button' ? document : undefined),
+  findDocument: (pathname: string) => {
+    if (pathname === '/components/button') return document;
+    if (pathname === '/guide/overview') {
+      return { ...document, pathname, source: 'docs/guide/overview.mdx', title: 'Lobe Docs Kit' };
+    }
+    return undefined;
+  },
   loadDocument: vi.fn(),
 }));
 
@@ -56,6 +62,17 @@ it('emits absolute canonical, Open Graph, and Twitter metadata for a document', 
         property: 'og:image',
       },
       { content: 'summary_large_image', name: 'twitter:card' },
+    ]),
+  );
+});
+
+it('shows the site title once when a page is titled after the site', () => {
+  const descriptors = readDescriptors(meta({ location: { pathname: '/guide/overview' } } as never));
+
+  expect(descriptors).toEqual(
+    expect.arrayContaining([
+      { title: 'Lobe Docs Kit' },
+      { content: 'Lobe Docs Kit', property: 'og:title' },
     ]),
   );
 });

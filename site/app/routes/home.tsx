@@ -5,11 +5,12 @@ import siteConfig from 'virtual:lobedocs/site-config';
 
 import { styles } from '../../components/Home/homeStyle';
 import { sectionLandingPathname } from '../../content/pageChrome';
+import { formatPageTitle } from '../../content/pageTitle';
 import { contentManifest, findDocument } from '../content/registry';
 
 export const meta: MetaFunction = () => {
   const document = findDocument('/');
-  const title = document ? `${document.title} - ${siteConfig.title}` : siteConfig.title;
+  const title = document ? formatPageTitle(document.title, siteConfig.title) : siteConfig.title;
   const description = document?.description ?? siteConfig.description;
   const canonicalUrl = new URL('/', siteConfig.siteUrl).href;
   const openGraphImage = siteConfig.themeConfig?.metadata?.openGraph?.image ?? '';
