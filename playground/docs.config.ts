@@ -37,6 +37,12 @@ export default {
       match: ['/components/'],
       sourceUrl: '{github}/tree/main/playground/{atomId}',
     },
+    metadata: {
+      openGraph: {
+        image:
+          'https://repository-images.githubusercontent.com/1428543135/2026feb8-4091-4f65-8335-0076f3c1143c',
+      },
+    },
     navItems: [
       {
         external: true,
