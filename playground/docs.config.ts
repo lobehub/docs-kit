@@ -6,6 +6,12 @@ export default {
   atomDirs: [{ dir: 'src' }],
   description:
     'Static documentation sites for React component libraries, driven by MDX and one config file.',
+  favicons: {
+    appleTouchIcon: '/apple-touch-icon.png',
+    icon: '/favicon.ico',
+    icon16: '/favicon-16x16.png',
+    icon32: '/favicon-32x32.png',
+  },
   homePage: './docs/home/home.tsx',
   legacyRedirects,
   publicDocs: [
