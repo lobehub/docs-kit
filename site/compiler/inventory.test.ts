@@ -55,10 +55,29 @@ describe('documentation inventory', () => {
     const inventory = buildRealInventory();
 
     expect(inventory.documents.map(({ source }) => source)).toEqual([
+      'docs/advanced/migrating-from-dumi.mdx',
+      'docs/advanced/react-router.mdx',
+      'docs/advanced/validations.mdx',
       'docs/changelog.mdx',
-      'docs/guide.mdx',
+      'docs/file-conventions/component-pages.mdx',
+      'docs/file-conventions/docs-config.mdx',
+      'docs/file-conventions/project-structure.mdx',
+      'docs/getting-started/cli.mdx',
+      'docs/getting-started/installation.mdx',
+      'docs/getting-started/introduction.mdx',
+      'docs/guide/ai-docs.mdx',
+      'docs/guide/api-tables.mdx',
+      'docs/guide/build-and-deploy.mdx',
+      'docs/guide/demos.mdx',
+      'docs/guide/guide-pages.mdx',
+      'docs/guide/home-page.mdx',
+      'docs/guide/integrations.mdx',
+      'docs/guide/markdown.mdx',
+      'docs/guide/search.mdx',
+      'docs/guide/theming.mdx',
       'docs/index.mdx',
       'src/Button/index.mdx',
+      'src/Callout/index.mdx',
     ]);
     expect(new Set(inventory.demoReferences.map(({ legacyId }) => legacyId)).size).toBe(
       inventory.demoReferences.length,

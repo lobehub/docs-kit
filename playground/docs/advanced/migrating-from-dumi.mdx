@@ -1,0 +1,46 @@
+---
+title: Migrating from dumi
+description: Move a dumi and dumi-theme-lobehub site to docs-kit, and keep old demo URLs working with legacyRedirects.
+order: 3
+---
+
+import Callout from '../../src/Callout';
+
+Docs Kit was built to replace `dumi` and `dumi-theme-lobehub` on the LobeHub sites. Most of a migration is mechanical: rename files, swap dumi's tags for `Demo` and `Api` blocks, and clean up frontmatter. Sites with existing readers can keep their old demo URLs alive.
+
+## Content
+
+Docs Kit replaces `dumi` and `dumi-theme-lobehub`. For each component page:
+
+- Rename `index.md` to `index.mdx`; only `index.mdx` is discovered.
+- Replace dumi's code tags with an import and a block: a `?demo` import and a `Demo` block whose `of` prop is that import (see [Demos](/guide/demos)). Map `center` to `layout="center"`, `noPadding` to `layout="bare"` and `iframe` to `isolated`.
+- Move demos under `src/**/demos/**`.
+- Replace hand-written API tables with an `Api` block (see [API Tables](/guide/api-tables)) and move the descriptions into JSDoc.
+- Remove the `group`, `nav`, `hero` and `apiHeader` frontmatter fields, and add `description` and `category`.
+- Move guide pages to `docs/**/*.mdx` and list them in `publicDocs`.
+- Delete `.dumirc.ts` and add `docs.config.ts`.
+
+## Keeping old URLs
+
+A site that already has readers on dumi URLs can pass a frozen inventory of the old site as `legacyRedirects`, usually stored as `compatibility.json`:
+
+```ts
+import legacyRedirects from './compatibility.json';
+
+export default {
+  // …
+  legacyRedirects,
+};
+```
+
+The inventory lists each old document and demo with its source file and dumi ids. With it, the build:
+
+- Keeps every old standalone demo id working as `/~demos/<legacy-id>`, next to the new canonical id.
+- Follows a document that moved from `.md` to `.mdx` without losing its aliases.
+- Fails the audit if a recorded page or demo is no longer produced.
+
+This playground keeps a small `compatibility.json` for its Button page, which the kit's tests use to check that behaviour.
+
+<Callout title="New sites">
+  A site that never ran on dumi has nothing to preserve. Leave `legacyRedirects` out.
+</Callout>

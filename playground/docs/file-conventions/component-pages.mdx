@@ -1,0 +1,91 @@
+---
+title: Component Pages
+description: Write an index.mdx next to a component, with the frontmatter, headings and blocks the kit expects.
+order: 3
+---
+
+import Callout from '../../src/Callout';
+
+A component page is the `index.mdx` that sits next to a component. Keeping docs in the component folder means the page, its demos and its types change together, and the kit turns each one into a page at `/components/...` with a sidebar entry, live demos and an API table.
+
+## Template
+
+A component page is an `index.mdx` in the component's folder, such as `src/Button/index.mdx`. The [Button page](/components/button) of this site is built from this shape:
+
+```mdx
+---
+title: Button
+description: Button triggers an action. Supports variants, sizes, loading and icon slots.
+category: General
+order: -1
+---
+
+import Basic from './demos/index.tsx?demo';
+import Variants from './demos/Variant.tsx?demo';
+
+## Introduction
+
+What it is, when to use it, and when to use something else.
+
+## Basic Usage
+
+<Demo of={Basic} title="Basic usage" />
+
+## Variants
+
+<Demo of={Variants} title="Variants" />
+
+## API
+
+<Api name="Button" />
+```
+
+`Demo` and `Api` are available in every MDX file without an import. See [Demos](/guide/demos) and [API Tables](/guide/api-tables).
+
+## Frontmatter
+
+| Field | Required | Effect |
+| --- | --- | --- |
+| `title` | yes | Page heading, `<title>` and sidebar label. A PascalCase title also shows `import { Title } from '<packageName>'` in the header |
+| `description` | yes | Subtitle, meta and Open Graph description, search and `llms.txt`. One or two plain sentences, no Markdown |
+| `category` | on component pages | Sidebar group inside the section. `General` sorts first; the others sort alphabetically |
+| `order` | no | Number; lower comes first inside the category. Pages without it sort last, then by title |
+| `status` | no | `stable`, `beta`, `experimental` or `deprecated`. Stored as search metadata and listed in the page's agent markdown |
+| `since` | no | Version string, listed in the page's agent markdown |
+| `route` | no | Overrides the URL. Component pages must stay under `/components/` |
+
+Any other field, such as dumi's `group`, `nav` or `hero`, is ignored. The [Callout page](/components/callout) sets `status` and `since`.
+
+<Callout title="Values are validated" type="warning">
+  A missing `title`, `description` or `category`, an `order` written as a string, or an unknown
+  `status` stops the build with the file name and the field. See [Build
+  Validations](/advanced/validations).
+</Callout>
+
+## Headings
+
+The page renders `title` as its only `h1`, so start sections at `##`; a stray `#` is rendered as `h2`. Each heading gets an anchor link, an entry in the outline and a line in `llms.txt`, so keep them short and stable: `## Variants`, `## Controlled`, `## API`.
+
+## Header links
+
+For pages under an atom root, the header shows the import line and links to NPM, the source folder and the edit page. They come from `themeConfig.apiHeader`:
+
+```ts
+apiHeader: {
+  packageName: '@lobehub/editor',
+  github: 'https://github.com/lobehub/lobe-editor',
+  docUrl: '{github}/edit/main/{atomId}',
+  sourceUrl: '{github}/tree/main/{atomId}',
+  match: ['/components/'],
+},
+```
+
+`{atomId}` is the MDX path for `docUrl` and the component folder for `sourceUrl`. Both templates default to the `master` branch, so set them when your default branch is `main`. `match` limits the links to pages whose URL starts with one of the prefixes.
+
+## Checklist
+
+- `index.mdx` sits in the component folder with `title`, `description` and `category`.
+- Every `Demo` block's `of` value has a matching `import X from './demos/….tsx?demo'`.
+- Each demo has one default export.
+- The `Api` block's `name` matches an exported component whose props are typed with JSDoc.
+- `lobedocs dev` shows the demos and API table, and `lobedocs build` passes.

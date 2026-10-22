@@ -1,0 +1,51 @@
+---
+title: Theme and Appearance
+description: Light and dark mode, the theme switcher, demo appearance, landing colours and StyleX options.
+order: 6
+---
+
+import Callout from '../../src/Callout';
+
+Docs Kit sites come with the LobeHub look in light and dark mode. Readers can switch the site theme and the theme of each demo, and you control the default, the landing colours and the StyleX setup from the config.
+
+## Light and dark
+
+The site follows the system colour scheme by default and shows a light, dark and system switcher in the top bar. `themeConfig.prefersColor` changes that:
+
+| Value     | Behaviour                                          |
+| --------- | -------------------------------------------------- |
+| `'auto'`  | Default. Follows the system and shows the switcher |
+| `'light'` | Forces light mode and hides the switcher           |
+| `'dark'`  | Forces dark mode and hides the switcher            |
+
+The choice is stored in `localStorage` and applied by an inline script before the first paint, so pages don't flash the wrong theme. The chrome is built with `@lobehub/ui`, wrapped in its `ConfigProvider`, so components in your demos pick up the same theme.
+
+## Demo appearance
+
+Each demo block has its own appearance menu (auto, light or dark), so a reader can check a component in the other scheme without switching the whole site. Isolated demos receive the chosen appearance through their standalone URL.
+
+## Landing colours
+
+The landing components from `@lobehub/ui/awesome` draw their accent gradient from the `--lobe-landing-gradient` CSS variable. To change it, set the variable on `:root` once (per theme if needed) rather than overriding component styles. `LANDING_GRADIENT_VAR`, `LANDING_PALETTE_LIGHT` and `LANDING_PALETTE_DARK` are exported from `@lobehub/ui/awesome` for that.
+
+## StyleX
+
+The kit styles its own chrome with StyleX and compiles only its own files. A library that compiles its components from source with StyleX, as lobe-ui does, passes its StyleX options through the `stylex` field. Because the config is serialized, options that contain functions go in a module, referenced by path:
+
+```ts
+// docs.config.ts
+stylex: './config/stylex.ts',
+```
+
+When `stylex` is set, the kit loads `@stylexjs/unplugin` from your repository and applies your options to the whole build.
+
+## Branding
+
+- `favicons` sets the favicon links; see [docs.config.ts](/file-conventions/docs-config#top-level-fields).
+- `themeConfig.metadata.openGraph.image` sets the default social preview image.
+- Files in `public/` are served at `/`.
+
+<Callout title="Code highlighting">
+  Code fences and demo sources use the `@lobehub/ui` highlighter with the kit's syntax theme in both
+  modes. There is no per-site syntax theme option.
+</Callout>

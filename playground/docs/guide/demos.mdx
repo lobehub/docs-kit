@@ -1,0 +1,74 @@
+---
+title: Demos
+description: Embed live, editable demos with a ?demo import and the Demo block, and choose a layout for each.
+order: 2
+---
+
+import Callout from '../../src/Callout';
+import Basic from '../../src/Button/demos/index.tsx?demo';
+import Variant from '../../src/Button/demos/Variant.tsx?demo';
+import Types from '../../src/Callout/demos/Types.tsx?demo';
+
+A demo shows a component running next to the source that produced it. Docs Kit renders each demo as a live block whose code readers can view, edit and open on its own page, so examples stay runnable instead of going stale as screenshots.
+
+## Import and render
+
+Import a demo file with the `?demo` suffix and pass it to the `of` prop of a `Demo` block. The suffix tells the compiler to load the component, its source and the scope the live editor needs:
+
+```mdx
+import Basic from './demos/index.tsx?demo';
+
+<Demo of={Basic} title="Basic usage" description="Optional caption." />
+```
+
+Without `?demo` you import the plain component, and the build rejects the block.
+
+<Demo
+  of={Basic}
+  description="This block renders src/Button/demos/index.tsx from a guide page."
+  title="Basic usage"
+/>
+
+Each block has a toolbar to show and edit the source, switch the preview between light and dark, change the viewport, reset edits, and open the demo on its own page at `/~demos/<id>`.
+
+## Props
+
+| Prop | Default | Use |
+| --- | --- | --- |
+| `of` | none | Required. The `?demo` import |
+| `title` | none | Caption above the demo |
+| `description` | none | Text under the caption |
+| `layout` | `'default'` | `'center'` centers small elements; `'bare'` drops the padding and frame |
+| `isolated` | `false` | Renders the demo in an iframe, for fixed, portal or global-CSS demos that would leak |
+| `editable` | `true` | Set `false` when the demo uses dynamic `import()`, workers or local files the editor can't load |
+| `height` | none | Frame height, for example for isolated demos |
+
+## Layouts
+
+`layout="center"` suits a single small component:
+
+<Demo layout="center" of={Variant} title="Centered" />
+
+`layout="bare"` removes the frame padding. Interactive playgrounds built with `StoryBook` and `useControls` from `@lobehub/ui/storybook` use it; see the playground on the [Button page](/components/button#playground).
+
+## Isolated demos
+
+`isolated` renders the standalone demo route in an iframe, so styles and portals stay inside it. Give it a `height`:
+
+<Demo height={260} isolated of={Types} title="Isolated" />
+
+## Demo files
+
+- One `export default` component per file, under `src/**/demos/**`.
+- Import your library by its package name, for example `import { Button } from '@lobehub/editor'`, so the source readers copy works in their project. Map that name to `src` with `alias` in `docs.config.ts`.
+- One idea per file, named after the idea: `Variant.tsx`, `Controlled.tsx`, and `index.tsx` for the basic one.
+- Self-contained: no fetching and no reliance on site state; mock data inline.
+
+<Callout title="About this playground">
+  The playground is a private package, so its demos import the sample components with relative paths
+  such as `../Button`. In a published library, use the package name.
+</Callout>
+
+## Demos on guide pages
+
+A guide page can embed any demo under `src/**/demos/**` with a relative `?demo` import, as this page does with `src/Button/demos/Variant.tsx` and `src/Callout/demos/Types.tsx`.

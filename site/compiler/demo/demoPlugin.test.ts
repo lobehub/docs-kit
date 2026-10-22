@@ -160,7 +160,7 @@ it('does not execute browser-only entries during descriptor evaluation or hide e
 
 it('keeps the demo route when an importing MDX document does not reference the demo', async () => {
   const rootImporter = resolve(playgroundRoot, 'src/Button/index.mdx');
-  const baseImporter = resolve(playgroundRoot, 'docs/guide.mdx');
+  const baseImporter = resolve(playgroundRoot, 'docs/guide/demos.mdx');
   const importers = new Map([
     ['virtual:root-button-demo', rootImporter],
     ['virtual:guide-button-demo', baseImporter],

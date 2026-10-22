@@ -1,0 +1,34 @@
+---
+title: Search
+description: Full-text search powered by Pagefind, available in dev and in the static build with no configuration.
+order: 7
+---
+
+Docs Kit includes full-text search across every page, with no service to sign up for and nothing to configure. It is built on Pagefind, which indexes the rendered HTML and searches entirely in the browser.
+
+## How it works
+
+`lobedocs build` runs [Pagefind](https://pagefind.app) over the rendered HTML and writes the index to `dist/pagefind/`. The site loads it on demand, the first time the search dialog opens, so pages don't pay for it up front.
+
+In `lobedocs dev`, the kit builds the same kind of index in memory from server-rendered pages and refreshes it when content changes. While an index is unavailable, search falls back to matching page titles and descriptions from the content manifest.
+
+## Using it
+
+- Click **Search** in the top bar, or press <kbd>⌘</kbd> <kbd>K</kbd> on macOS and <kbd>Ctrl</kbd> <kbd>K</kbd> elsewhere.
+- Use the arrow keys to move through results, <kbd>→</kbd> to jump into a result's sections and <kbd>Enter</kbd> to open it.
+- Recent searches are remembered in the browser.
+
+## What gets indexed
+
+Pagefind indexes the element marked `data-pagefind-body`, which the docs layout puts around the page content, including the home page. The page title, description, category, status and API tables are stored as metadata, so results show a category next to each page.
+
+On a custom home page, mark the hero title and description:
+
+```tsx
+<LandingHero
+  description={<span data-pagefind-meta="description">{description}</span>}
+  title={<span data-pagefind-meta="title">LobeHub</span>}
+/>
+```
+
+Add `data-pagefind-ignore` to any element that should stay out of the index.

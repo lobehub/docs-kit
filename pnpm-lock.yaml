@@ -260,9 +260,18 @@ importers:
       '@lobehub/docs-kit':
         specifier: workspace:*
         version: link:..
+      '@lobehub/icons':
+        specifier: ^6.0.0
+        version: 6.0.0(@lobehub/ui@6.5.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@lobehub/ui':
         specifier: ^6.5.1
         version: 6.5.1(@lobehub/fluent-emoji@5.0.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@lobehub/icons@6.0.0)(@shikijs/themes@4.5.0)(@types/mdast@4.0.4)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(micromark-util-types@2.0.3)(micromark@4.0.3(supports-color@9.4.0))(motion@14.4.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@9.4.0)
+      lucide-react:
+        specifier: ^1.55.0
+        version: 1.60.0(@types/react@19.3.0)(react@19.3.1)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react:
         specifier: ^19.2.7
         version: 19.3.1
@@ -4494,7 +4503,6 @@ packages:
 
   katex@0.18.11:
     resolution: {integrity: sha512-yvyz/2VMKqoho/35Hat5w37wIEdWJ5ElVMidTAlWrxr5uW4aBGsEpveTmKh18/zw08v/7lGswCPon4OhqmqrTA==}
-    deprecated: Accidentally published with breaking changes. Use 0.19.0 instead.
     hasBin: true
 
   katex@0.19.0:
@@ -6290,7 +6298,6 @@ packages:
 
   sliced@1.0.1:
     resolution: {integrity: sha512-VZBmZP8WU3sMOZm1bdgTadsQbcscK0UM8oKxKVBs4XAhUo2Xxzm/OFMGBkPusxw9xL3Uy8LrzEqGqJhclsr0yA==}
-    deprecated: Unsupported
 
   smol-toml@1.9.1:
     resolution: {integrity: sha512-j7WyPdf0CJoutMzMoPLF/bVXHtKZIT9Rb4eGeEbWw8X2t5oirjPgpL+OpaENZrILYaXqYwnVH+qgUwVbl+pUJQ==}
@@ -7556,7 +7563,7 @@ snapshots:
   '@code-inspector/core@2.0.9(supports-color@9.4.0)':
     dependencies:
       '@vue/compiler-dom': 3.5.44
-      chalk: 4.1.1
+      chalk: 4.1.2
       launch-ide: 1.4.10
       portfinder: 1.0.38(supports-color@9.4.0)
       ws: 8.22.0
@@ -12137,7 +12144,7 @@ snapshots:
 
   launch-ide@1.4.10:
     dependencies:
-      chalk: 4.1.1
+      chalk: 4.1.2
       dotenv: 16.6.1
 
   leva@0.10.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):

@@ -1,0 +1,54 @@
+---
+title: CLI
+description: The lobedocs commands, how arguments are forwarded, and what each command writes.
+order: 3
+---
+
+import Callout from '../../src/Callout';
+
+The `lobedocs` CLI is the only build tool a consumer repository needs. It runs React Router and Vite with the kit's own config, so you start, build and type the site with three commands and never maintain a bundler setup.
+
+## Commands
+
+The package installs one binary, `lobedocs`, with three commands:
+
+| Command | What it does |
+| --- | --- |
+| `lobedocs dev` | Starts the React Router dev server with hot reload for MDX, demos and components |
+| `lobedocs build` | Prerenders every page into `.react-router/build`, then finalizes and audits the site into `dist/` |
+| `lobedocs typegen` | Generates React Router route types into `.react-router/types` |
+
+Any other command name exits with `Unknown lobedocs command` and prints the usage line.
+
+## Forwarded arguments
+
+Arguments after the command are passed to the matching `react-router` command, after the kit's own project directory and `--config` flag. For example, to pick a port or listen on the network during development:
+
+```bash
+pnpm lobedocs dev --port 3000 --host
+```
+
+## Run from the repository root
+
+Each command runs in the current directory: it loads `./docs.config.ts`, resolves `tsx`, `@react-router/dev` and `vite` from your `package.json`, and treats that directory as the Vite root. Run it from the folder that holds `docs.config.ts`, which is what package scripts do.
+
+## What build does
+
+1. Runs `react-router build` with the kit's Vite config. React Router prerenders every document, every section overview, the 404 page, `/llms.txt`, `/skills.md`, the per-page agent markdown, `/sitemap.xml` and every standalone demo route.
+2. Runs the kit's finalize step on a staged copy of the client output: copies the 404 page to `404.html`, builds the Pagefind index, writes `sitemap.xml`, `robots.txt`, `/llms.txt`, `/skills.md` and the per-page agent markdown, then audits the result.
+3. Swaps the finished site into `dist/` only when the audit passes, so a failed build leaves the previous `dist/` in place.
+
+Set `ANALYZE=1` to also write a bundle report to `.react-router/build/client/stats.html`:
+
+```bash
+ANALYZE=1 pnpm lobedocs build
+```
+
+## The React Router config
+
+React Router needs a config file next to your project. When your repository has no `react-router.config.*`, each command writes a small `react-router.config.mjs` that re-exports the kit's defaults and deletes it when the last running `lobedocs` process for that directory exits. A config you write yourself is never touched; see [React Router Overrides](/advanced/react-router).
+
+<Callout title="Restart after editing docs.config.ts">
+  The config is loaded once per process, in a `node --import tsx` subprocess. Changes to
+  `docs.config.ts` apply after you restart `lobedocs dev`.
+</Callout>

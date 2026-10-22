@@ -1,0 +1,79 @@
+---
+title: Home Page
+description: Use the built-in home page from themeConfig.home, or render your own with homePage and @lobehub/ui/awesome.
+order: 5
+---
+
+import Callout from '../../src/Callout';
+
+The home page is the first thing readers see. Docs Kit renders a simple one from config, or your own React component when you want a full landing page.
+
+## The default home
+
+Without `homePage`, `/` renders a built-in page: a hero with the site title and description, optional feature cards and an optional install command. Configure it with `themeConfig.home`:
+
+```ts
+themeConfig: {
+  home: {
+    hero: {
+      title: 'Lobe Editor',
+      accent: 'for AI apps',
+      actions: [{ href: '/components/editor', label: 'Get Started' }],
+    },
+    features: [{ title: 'Fast', description: 'Prerendered static pages.', icon: 'Zap' }],
+    install: 'pnpm add @lobehub/editor',
+    ctaTitle: 'Get started in seconds',
+    ctaFootnote: 'MIT licensed',
+  },
+},
+```
+
+`hero.title` defaults to `title`, and the first action is drawn as the primary button. Without `hero.actions`, a Get Started button links to the first page of the first sidebar section. `features[].icon` takes one of `Blocks`, `BookOpenText`, `Code`, `Globe`, `Languages`, `MoonStar`, `Palette`, `Rocket`, `Shield`, `Sparkles`, `SunMoon` or `Zap`. The install block only appears when `install` is set.
+
+## A custom home
+
+Point `homePage` at a module and its default export renders inside the docs layout instead:
+
+```ts
+homePage: './docs/home/home.tsx',
+```
+
+```tsx
+export default function Home({
+  description,
+  getStartedPathname,
+}: {
+  description: string;
+  getStartedPathname: string;
+}) {
+  return <h1>{description}</h1>;
+}
+```
+
+`description` is the `description` from `docs/index.mdx` (or the site description), and `getStartedPathname` is the first page of the first sidebar section. `docs/index.mdx` still needs its frontmatter, because it provides the title and description for the page's meta tags.
+
+## Building it from landing components
+
+`@lobehub/ui/awesome` has a component for each band of a landing page. This site's home, in `playground/docs/home/home.tsx`, uses them in this order:
+
+| Band | Component | On this site |
+| --- | --- | --- |
+| Hero | `LandingHero` | Title, accent, description, Get Started and GitHub |
+| Beside the hero text | `AgentSkillCard` | A prompt pointing agents at `/skills.md`, and the install command |
+| Under the hero | `LogoMarquee` | Static hosts that can serve `dist/` |
+| Live gallery | `LandingSection` + `BentoGrid` | A real `Demo` block, search, theme switch, CLI and `llms.txt` |
+| Code next to its result | `CodeShowcase` | Demo source, StoryBook playground and props that turn into an API table |
+| Reasons to choose | `FeatureGrid` | Six foundations of the kit |
+| Closing call to action | `InstallBanner` | The install command |
+
+Internal links in these components are plain anchors unless you pass a `renderLink`, so the home page passes one that uses React Router's `Link` for site paths and opens absolute URLs in a new tab. Non-primary actions take `onNavigate={useNavigate()}`.
+
+<Callout title="Keep search metadata" type="tip">
+  The docs layout indexes the home page with Pagefind. Wrap the hero title and description in
+  `<span data-pagefind-meta="title">` and `<span data-pagefind-meta="description">` so the home
+  page shows up in search with the right text.
+</Callout>
+
+## Using kit features on the home page
+
+The home module is compiled by the same Vite pipeline as the docs, so it can import MDX. This site's home imports a small MDX file that contains a `Demo` block and an `Api` block, and the compiler fills them in exactly as it does on a page.

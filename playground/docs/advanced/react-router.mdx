@@ -1,0 +1,39 @@
+---
+title: React Router Overrides
+description: Change the React Router config the CLI supplies, for example to serve the site under a basename.
+order: 2
+---
+
+The CLI supplies a React Router config so your repository doesn't need one. When you need to change it, for example to serve the site under a sub-path, you can add your own and the CLI steps aside.
+
+## Defaults
+
+The CLI supplies this React Router config for every command:
+
+| Option           | Value                                     |
+| ---------------- | ----------------------------------------- |
+| `appDirectory`   | The kit's own `site/` folder              |
+| `buildDirectory` | `.react-router/build`                     |
+| `ssr`            | `false`                                   |
+| `prerender`      | Every page, overview, demo and agent file |
+| `routeDiscovery` | `{ mode: 'initial' }`                     |
+
+## Overriding
+
+Add a `react-router.config.ts` to the repository root and build it from the exported defaults:
+
+```ts
+import { defineLobeDocsReactRouterConfig } from '@lobehub/docs-kit/react-router-config';
+
+export default defineLobeDocsReactRouterConfig({
+  basename: '/docs',
+});
+```
+
+`defineLobeDocsReactRouterConfig` merges your options over the defaults. The module also exports `lobeDocsReactRouterConfig`, the defaults object, as both a named and the default export.
+
+A config you write yourself always wins: the CLI only generates its temporary `react-router.config.mjs` when no `react-router.config.*` exists, and never modifies yours. Keep `appDirectory`, `buildDirectory` and `prerender` from the defaults unless you know why you are changing them; the finalize step reads `.react-router/build/client`.
+
+## Stable entry points
+
+`@lobehub/docs-kit/react-router-config` and the `lobedocs` CLI are the supported entry points. Other deep imports into the package are not stable yet.

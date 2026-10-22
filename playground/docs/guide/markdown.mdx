@@ -1,0 +1,70 @@
+---
+title: MDX and Markdown
+description: What MDX supports on a docs-kit page, from GFM tables to imported components and Markdown files.
+order: 1
+---
+
+import Callout from '../../src/Callout';
+
+Every page is MDX: Markdown with JSX. Docs Kit compiles it with GitHub Flavored Markdown, highlighted code blocks and anchored headings, and lets you import any React component when Markdown isn't enough.
+
+## Globals
+
+Only `Demo` and `Api` are available without an import. Import anything else explicitly, from your own source or from a package:
+
+```mdx
+import Callout from '../../src/Callout';
+
+<Callout title="Heads up">Imported like any React component.</Callout>
+```
+
+<Callout title="Heads up">Imported like any React component.</Callout>
+
+## GitHub Flavored Markdown
+
+GFM is on: tables, task lists, strikethrough and autolinks.
+
+| Syntax        | Result              |
+| ------------- | ------------------- |
+| `~~removed~~` | ~~removed~~         |
+| `- [x] done`  | a checked task item |
+
+- [x] Write the page
+- [ ] Ship it
+
+There is no `:::` admonition syntax. Use a component instead, as above.
+
+## Code blocks
+
+Fenced code is highlighted with the language from the fence and gets a copy button. It is never executed; use a [demo](/guide/demos) to run code.
+
+```tsx
+export default () => <Button variant="primary">Save</Button>;
+```
+
+Plain ` ```tsx ` is enough. dumi's ` ```tsx | pure ` meta is harmless but means nothing here.
+
+## Headings and outline
+
+Every `##` to `####` heading gets an id and an anchor link. `##` and `###` headings fill the outline on the right, and the page's headings are listed in `llms.txt`. Link to a heading with the page path and the heading slug, for example [/guide/demos#layouts](/guide/demos#layouts).
+
+## Links
+
+Link with site pathnames such as `/components/button`. The build checks every internal link and `#hash` target, so a typo fails the build instead of shipping a 404.
+
+## Importing Markdown files
+
+A `.md` file can be imported and rendered as a component. The changelog page of this site does exactly that with the repository's `CHANGELOG.md`:
+
+```mdx
+---
+title: Changelog
+description: Release history of @lobehub/docs-kit.
+---
+
+import Changelog from '../../CHANGELOG.md';
+
+<Changelog />
+```
+
+Raw HTML in `.md` files, such as `<details>` or `<kbd>`, is kept.

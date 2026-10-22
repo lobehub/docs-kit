@@ -1,0 +1,59 @@
+---
+title: API Tables
+description: Generate prop tables from TypeScript with the Api block, and write types the extractor can read.
+order: 3
+---
+
+import Callout from '../../src/Callout';
+
+An API table lists a component's props with their types, defaults and descriptions. Docs Kit reads them from your TypeScript source, so the table can't drift from the code, and the build fails when a documented default disagrees with the runtime.
+
+## Usage
+
+```mdx
+<Api name="Button" />
+<Api name="ChatItem" from=".." />
+```
+
+`name` is the exported component. Without `from`, the compiler walks up from the MDX file and resolves the name through the nearest `index.ts` barrel. `from` is a module path relative to the MDX file, for when the component is exported somewhere else. Both must be static strings; `data` is filled in by the compiler and cannot be written by hand.
+
+## Live example
+
+This guide page renders the table for the playground's Callout with `name="Callout"` and `from="../../src/Callout"`:
+
+<Api from="../../src/Callout" name="Callout" />
+
+## Writing props
+
+The table is only as good as your types. Props are read with the TypeScript compiler, using the `tsconfig.json` nearest to the MDX file:
+
+```ts
+export interface CalloutProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+  /**
+   * Bold heading shown above the body.
+   */
+  title?: ReactNode;
+  /**
+   * Tone of the callout, which sets the accent colour.
+   * @default 'info'
+   */
+  type?: 'info' | 'tip' | 'warning';
+}
+```
+
+- The JSDoc body becomes the description. Supported tags are `@default`, `@deprecated` and `@since`.
+- Required props are marked as required.
+- Props whose names start with `_` are hidden.
+- Attributes inherited from React's DOM types are collapsed into one footnote: "Also accepts all native HTML and ARIA attributes."
+
+<Callout title="These fail the build" type="warning">
+  A `@default` that disagrees with the default in the component's destructuring, a prop typed `any`
+  or `unknown`, a `name` that doesn't resolve to an exported component, or a `data` attribute on the
+  block.
+</Callout>
+
+## Resolution rules
+
+- A named export that matches `name` wins.
+- Otherwise a default export is accepted when the component, its file or its folder is named after `name`. `src/Button/index.ts` exporting `default` from `./Button` resolves `name="Button"`.
+- When a barrel exposes both a matching named export and a different default export, the build asks you to set `from`.

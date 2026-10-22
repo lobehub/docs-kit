@@ -1,0 +1,28 @@
+---
+title: Callout
+description: Callout highlights a note, tip or warning inside MDX prose. The guide pages of this site use it.
+category: Feedback
+status: beta
+since: 6.2.1
+---
+
+import Basic from './demos/index.tsx?demo';
+import Types from './demos/Types.tsx?demo';
+
+## Introduction
+
+MDX in docs-kit has no `:::` admonition syntax. When a page needs a highlighted note, import a component and render it, the way the guide pages on this site import `Callout`. This page also sets the optional frontmatter fields `status: beta` and `since: 6.2.1`. They are not drawn on the page: `status` is stored as Pagefind metadata, and both appear in the page's agent markdown at [/skills/components/callout.md](/skills/components/callout.md).
+
+## Basic Usage
+
+<Demo of={Basic} title="Basic usage" />
+
+## Types
+
+The `type` prop picks the accent colour.
+
+<Demo of={Types} title="Types" />
+
+## API
+
+<Api name="Callout" />

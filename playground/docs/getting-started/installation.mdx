@@ -1,0 +1,107 @@
+---
+title: Installation
+description: Add @lobehub/docs-kit and its peer dependencies, wire the package scripts and write a minimal config.
+order: 2
+---
+
+import Callout from '../../src/Callout';
+
+Adding the kit to a component library takes three steps: install the package and its peers, add two scripts, and write a `docs.config.ts`. This page walks through each one and ends with a site you can open in the browser.
+
+## Requirements
+
+- Node.js 22.22 or later.
+- React 19, React Router 8.2 or later and Vite 8.1 or later. These are peer dependencies, so your repository installs them.
+- `tsx`, which the CLI uses to load `docs.config.ts` and its own TypeScript entry.
+
+## Install
+
+```bash
+pnpm add -D @lobehub/docs-kit @react-router/dev react-router vite tsx
+pnpm add react react-dom
+```
+
+The kit renders its chrome with [`@lobehub/ui`](https://ui.lobehub.com), which it depends on directly. Demos that use other packages need those packages installed in your repository.
+
+## Package scripts
+
+```json
+{
+  "scripts": {
+    "docs:dev": "lobedocs dev",
+    "docs:build": "lobedocs build",
+    "postinstall": "lobedocs typegen"
+  }
+}
+```
+
+See [CLI](/getting-started/cli) for what each command does.
+
+## Minimal config
+
+Create `docs.config.ts` at the repository root. Four fields are required: `atomDirs`, `title`, `description` and `siteUrl`.
+
+```ts
+export default {
+  atomDirs: [{ dir: 'src' }],
+  title: 'Lobe Editor',
+  description: 'One sentence describing the library.',
+  siteUrl: 'https://editor.lobehub.com',
+  alias: { '@lobehub/editor': 'src' },
+  themeConfig: {
+    apiHeader: {
+      packageName: '@lobehub/editor',
+      github: 'https://github.com/lobehub/lobe-editor',
+    },
+    socialLinks: [
+      { href: 'https://github.com/lobehub/lobe-editor', icon: 'github', label: 'GitHub' },
+    ],
+  },
+};
+```
+
+Export a plain object. The package has no root export, so there is no `defineDocsConfig` import for consumers; `alias` maps your package name to `src` so demos can import the package by name and still run from source. Every field is listed in [docs.config.ts](/file-conventions/docs-config).
+
+<Callout title="Set apiHeader.packageName" type="warning">
+  The import line and NPM link in each component header default to `@lobehub/ui`. Set `packageName`
+  to your own package.
+</Callout>
+
+## Home and first page
+
+Add `docs/index.mdx`. Its frontmatter feeds the home page title and description even when you supply a [custom home page](/guide/home-page):
+
+```mdx
+---
+title: Lobe Editor
+description: One sentence describing the library.
+---
+```
+
+Then add `src/Button/index.mdx` as described in [Component Pages](/file-conventions/component-pages) and run `pnpm docs:dev`.
+
+## Git ignore
+
+```gitignore
+.react-router/
+dist/
+react-router.config.mjs
+```
+
+`lobedocs` writes route types and the intermediate build into `.react-router/` and the finished site into `dist/`. While a command runs it writes a temporary `react-router.config.mjs` when you have no React Router config of your own, and removes it on exit.
+
+## Type checking the site
+
+`lobedocs typegen` writes route types to `.react-router/types`. To type check them, add a `tsconfig.site.json`:
+
+```json
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDirs": [".", "./.react-router/types"],
+    "types": ["node", "vite/client"]
+  },
+  "extends": "./tsconfig.json",
+  "include": [".react-router/types/**/*"]
+}
+```

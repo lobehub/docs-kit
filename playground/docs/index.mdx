@@ -1,6 +1,8 @@
 ---
-title: Docs Kit Playground
-description: A sandbox consumer that exercises every docs-kit feature end to end.
+title: Lobe Docs Kit
+description: Static documentation sites for React component libraries, driven by MDX and one config file.
 ---
 
-Start with the [Greeting](/components/greeting) component or read the [guide](/guide).
+Lobe Docs Kit (`@lobehub/docs-kit`) turns a component library repository into a prerendered documentation site. Your repository keeps the content: `docs.config.ts`, an `index.mdx` next to each component, demo files and guide pages. The `lobedocs` CLI owns the Vite and React Router setup, builds every page to static HTML, and adds Pagefind search, a sitemap, `/llms.txt` and `/skills.md`.
+
+This site is the kit's own playground: a consumer repository that documents how to use the kit and doubles as the end-to-end build check in CI. Start with the [introduction](/getting-started/introduction).

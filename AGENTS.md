@@ -38,7 +38,7 @@ The skill text was written for consumers; when it disagrees with `src/config.ts`
 
 The user-facing docs are the playground site (`pnpm dev`):
 
-- **Guides**: `playground/docs/<group>/<page>.mdx` with `title` + `description` (+ `order`), listed in `publicDocs` in `playground/docs.config.ts`. Groups are `getting-started`, `writing`, `configuration`, `advanced`, each a `themeConfig.sidebarGroups` entry.
+- **Guides**: `playground/docs/<group>/<page>.mdx` with `title` + `description` (+ `order`), listed in `publicDocs` in `playground/docs.config.ts`. Groups are `getting-started`, `file-conventions`, `guide`, `advanced` (structure modeled on nextra.site/docs), each a `themeConfig.sidebarGroups` entry.
 - **Sample components**: `playground/src/<Name>/` (`index.ts`, `type.ts` with JSDoc, `index.mdx`, `demos/`). They are fixtures too: `Button` and `compatibility.json` back `buttonPilot`, `inventory`, `readLegacyMap`, `demoPlugin` and `liveTransform` tests, and `site/compiler/inventory.test.ts` lists every playground document, so update it when you add or remove a page.
 - **Home**: `playground/docs/home/home.tsx` (follow `building-landing-home`).
 - **Facts**: verify every documented field, command and route against the source before writing it. Only `Demo` and `Api` are MDX globals; no `:::` callouts (the playground imports `src/Callout`).
@@ -47,7 +47,7 @@ The user-facing docs are the playground site (`pnpm dev`):
 
 ## Adding Things
 
-- **Config field**: add it to `DocsConfig` / `DocsThemeConfig` in `src/config.ts`; if the browser needs it, it reaches the app through `virtual:lobedocs/site-config` (`ClientSiteConfig`). Values must survive JSON (the config is serialized out of a subprocess); pass functions as a module path, like `stylex`. Add a test, document it in `playground/docs/configuration/docs-config.mdx`, and update the `using-docs-kit` reference.
+- **Config field**: add it to `DocsConfig` / `DocsThemeConfig` in `src/config.ts`; if the browser needs it, it reaches the app through `virtual:lobedocs/site-config` (`ClientSiteConfig`). Values must survive JSON (the config is serialized out of a subprocess); pass functions as a module path, like `stylex`. Add a test, document it in `playground/docs/file-conventions/docs-config.mdx`, and update the `using-docs-kit` reference.
 - **CLI command**: add a handler to `commands` in `src/cli/commands.ts` (usage text is derived from its keys), cover it in `src/cli/commands.test.ts`, and document it in `playground/docs/getting-started/cli.mdx` and the README table.
 - **Docs UI component**: `site/components/<Name>/<Name>.tsx` with a StyleX `style.ts` (named exports only; StyleX longhands such as `backgroundColor`, enforced by ESLint) and a colocated `<Name>.test.tsx`. To expose it in MDX, register it in `site/app/mdx-components.tsx` and update the "only `Demo` and `Api` are global" statements in docs and skills.
 - **Theme or appearance**: providers and the theme bootstrap live in `site/app/providers/`; global styles in `site/styles/`. Colors come from `@lobehub/ui` tokens, not hard-coded values.

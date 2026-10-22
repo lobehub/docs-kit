@@ -1,0 +1,38 @@
+---
+title: AI-Native Docs
+description: llms.txt, skills.md and per-page markdown generated from the same MDX that renders the site.
+order: 8
+---
+
+import Callout from '../../src/Callout';
+
+Coding agents read documentation too. Every Docs Kit site publishes its content as plain markdown for them, generated from the same MDX that renders the pages, so people and agents always see the same docs.
+
+## Generated files
+
+Every site serves agent-readable files, rebuilt from `docs.config.ts`, the folder layout and the MDX source of each page. They work in `lobedocs dev` and are written into the static build.
+
+| Route | Content |
+| --- | --- |
+| `/llms.txt` | An [llms.txt](https://llmstxt.org/) index: site title and summary, then one entry per page with its description, category, heading outline and docs URL |
+| `/skills.md` | An agent skill for the whole site: config, folder architecture and the prose of every page |
+| `/skills/<path>.md` | The markdown for one page, for example [/skills/getting-started/installation.md](/skills/getting-started/installation.md) |
+
+Import lines and component tags such as the `Demo` and `Api` blocks are left out. Headings, paragraphs, tables and fenced code are kept, so write code fences for anything an agent should be able to copy.
+
+Every HTML page links to `/llms.txt` with `rel="describedby"`, and the sidebar always links to `skills.md` and `llms.txt`.
+
+## Pointing agents at your docs
+
+Give a coding agent one sentence and the URL:
+
+```text
+Read https://docs-kit.lobehub.com/skills.md and follow it to set up docs with @lobehub/docs-kit.
+```
+
+The home page of this site shows the same prompt in its agent card.
+
+<Callout title="Write for both readers" type="tip">
+  The `description` frontmatter and the headings end up in `llms.txt`, so the advice for people
+  applies to agents too: one or two plain sentences, and short, stable headings.
+</Callout>

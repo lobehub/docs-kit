@@ -34,7 +34,7 @@ it('emits absolute canonical, Open Graph, and Twitter metadata for a document', 
 
   expect(descriptors).toEqual(
     expect.arrayContaining([
-      { title: 'Button - Docs Kit Playground' },
+      { title: 'Button - Lobe Docs Kit' },
       { content: 'Triggers an action.', name: 'description' },
       {
         href: `${siteMetadata.origin}/components/button`,
@@ -48,7 +48,7 @@ it('emits absolute canonical, Open Graph, and Twitter metadata for a document', 
       },
       { content: 'website', property: 'og:type' },
       { content: siteMetadata.name, property: 'og:site_name' },
-      { content: 'Button - Docs Kit Playground', property: 'og:title' },
+      { content: 'Button - Lobe Docs Kit', property: 'og:title' },
       { content: 'Triggers an action.', property: 'og:description' },
       { content: `${siteMetadata.origin}/components/button`, property: 'og:url' },
       {
@@ -65,7 +65,7 @@ it('marks the prerendered not-found document as noindex', () => {
 
   expect(descriptors).toEqual(
     expect.arrayContaining([
-      { title: 'Documentation not found - Docs Kit Playground' },
+      { title: 'Documentation not found - Lobe Docs Kit' },
       { content: 'noindex, nofollow', name: 'robots' },
     ]),
   );
@@ -86,11 +86,11 @@ it('describes section and category overview pages', () => {
     readDescriptors(meta({ location: { pathname: '/sections/components' } } as never)),
   ).toEqual(
     expect.arrayContaining([
-      { title: 'Components - Docs Kit Playground' },
+      { title: 'Components - Lobe Docs Kit' },
       { href: `${siteMetadata.origin}/sections/components`, rel: 'canonical', tagName: 'link' },
     ]),
   );
   expect(
     readDescriptors(meta({ location: { pathname: '/sections/components/general' } } as never)),
-  ).toEqual(expect.arrayContaining([{ title: 'General - Components - Docs Kit Playground' }]));
+  ).toEqual(expect.arrayContaining([{ title: 'General - Components - Lobe Docs Kit' }]));
 });

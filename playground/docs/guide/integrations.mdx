@@ -1,0 +1,45 @@
+---
+title: Comments and Analytics
+description: Add giscus comments, Plausible analytics and a default social image with one config field each.
+order: 9
+---
+
+Comments, analytics and social previews are each one config field away. The kit loads their scripts only where they are needed, so pages stay light.
+
+## Comments with giscus
+
+`themeConfig.giscus` adds a discussion toggle to the feedback bar at the end of every page, which opens a [giscus](https://giscus.app) thread backed by GitHub Discussions. Copy the four values from the giscus setup page:
+
+```ts
+themeConfig: {
+  giscus: {
+    repo: 'lobehub/lobe-ui',
+    repoId: 'R_kgDOJloKoA',
+    category: 'Q&A',
+    categoryId: 'DIC_kwDOJloKoM4CXsCu',
+  },
+},
+```
+
+The giscus client is only loaded when a reader opens the discussion, so it stays out of each page's initial bundle.
+
+## Analytics with Plausible
+
+`themeConfig.analytics.plausible` injects the [Plausible](https://plausible.io) script:
+
+```ts
+themeConfig: {
+  analytics: {
+    plausible: {
+      domain: 'ui.lobehub.com',
+      source: 'https://plausible.io/js/script.js',
+    },
+  },
+},
+```
+
+`source` is the script URL, which lets you point at a self-hosted Plausible instance. The script is only rendered in production builds, so `lobedocs dev` sends no events.
+
+## Social preview
+
+`themeConfig.metadata.openGraph.image` sets the `og:image` of every page. Titles, descriptions, canonical URLs and `og:url` come from each page's frontmatter and `siteUrl`.

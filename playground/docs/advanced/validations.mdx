@@ -1,0 +1,57 @@
+---
+title: Build Validations
+description: The content errors and artifact checks that stop lobedocs build, and how to fix each one.
+order: 1
+---
+
+import Callout from '../../src/Callout';
+
+`lobedocs build` fails fast on content errors, then audits the finished site before it replaces `dist/`. `lobedocs dev` reports the content errors too, so most problems show up while you write.
+
+## Frontmatter
+
+Reported as `Invalid MDX documents:` with the file and every bad field.
+
+| Rule | Fix |
+| --- | --- |
+| No YAML frontmatter, or invalid YAML | Add a `---` block at the very top (`CHANGELOG.md` is exempt) |
+| `title` or `description` missing or empty | Add both, as plain strings |
+| `category` missing on a component page | Add `category`, reusing an existing name |
+| `order` is not a finite number | Write `order: 2`, not `order: "2"` |
+| `status` is not `stable`, `beta`, `experimental` or `deprecated` | Use one of those or remove it |
+| `route` is invalid or leaves `/components/` on a component page | Remove `route` and let the folder decide the URL |
+| Two documents resolve to the same URL | Rename a folder or set a distinct `route` |
+
+## Sidebar groups
+
+`themeConfig.sidebarGroups` entries need a non-empty `dir` and `title`; `icon` must be a non-empty string and `order` a finite number when set. Duplicate `dir` or `title` values are rejected.
+
+## Demos
+
+- A `Demo` block whose `of` value is not a `?demo` import, or the imported file does not exist.
+- A demo file without exactly one `export default`.
+- An `isolated` demo, or a demo needed by a standalone route, outside `src/**/demos/**`.
+
+Dynamic `import()`, workers and local dependencies the live editor can't load produce warnings, not errors. Set `editable={false}` on that `Demo` block.
+
+## API tables
+
+- An `Api` block without a `name`, with an empty `from`, or with a `data` attribute.
+- A `name` that doesn't resolve to an exported component.
+- A prop typed `any` or `unknown`.
+- A JSDoc `@default` that disagrees with the default in the component's destructuring.
+
+## Artifact audit
+
+After the build, the kit checks the output:
+
+- **Internal links and `#hash` targets.** The most common author error. Link with site paths such as `/components/button#api`, and make each hash match a heading slug.
+- Every page and standalone demo has its HTML, with the right title, description, canonical and Open Graph tags.
+- `llms.txt`, `skills.md`, the sitemap, `robots.txt`, the Pagefind index and the 404 page exist and agree with the content.
+- Bundle isolation: pages don't load the live editor, giscus or Pagefind in their initial bundle, and standalone demos don't include the docs chrome. Don't import those from MDX or demos directly.
+- With `legacyRedirects`, every recorded legacy page and demo id is still produced.
+
+<Callout title="Reading the error" type="tip">
+  Each failure names the file and the rule. Fix the first one and rebuild; later errors are often
+  caused by the first.
+</Callout>

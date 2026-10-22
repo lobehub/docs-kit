@@ -1,0 +1,82 @@
+---
+title: Introduction
+description: What Lobe Docs Kit is, what your repository keeps, and what the kit generates for you.
+order: 1
+---
+
+import Callout from '../../src/Callout';
+
+Lobe Docs Kit (`@lobehub/docs-kit`) is a toolkit for documenting React component libraries. You write MDX next to your components; the `lobedocs` CLI turns it into a fast, prerendered documentation site with live demos, API tables, search and docs for AI agents.
+
+It is the documentation stack behind [ui.lobehub.com](https://ui.lobehub.com) and the other LobeHub component library sites, and replaces `dumi` and `dumi-theme-lobehub` with a single package.
+
+## Why Docs Kit
+
+- **One config file.** A repository keeps content and `docs.config.ts`. There is no Vite or React Router setup to maintain.
+- **Docs live with the code.** Each component's page, demos and types sit in the same folder, so they change together.
+- **Static and fast.** Every page is prerendered to HTML and can be served by any static host.
+- **Checked on every build.** Broken links, missing demos and API defaults that disagree with the code fail the build instead of reaching readers.
+- **Readable by agents.** The same content is published as `/llms.txt`, `/skills.md` and one markdown file per page.
+
+## What your repository keeps
+
+A consumer repository holds content and one config file, nothing else:
+
+- `docs.config.ts` with the site title, description, URL and the folders to scan.
+- An `index.mdx` next to each component, with demos under `demos/`.
+- Optional guide pages under `docs/`, a custom home page and a changelog.
+
+There is no `vite.config.ts` or `react-router.config.ts` to maintain. The CLI supplies both, and you only add a React Router config when you need to [override it](/advanced/react-router).
+
+## What the kit generates
+
+| Output | Where it comes from |
+| --- | --- |
+| One prerendered page per MDX | `index.mdx` files under `atomDirs`, plus the guides listed in `publicDocs` |
+| Live, editable demo blocks | The `Demo` block with a `?demo` import |
+| API tables | The `Api` block, read from your TypeScript props and JSDoc |
+| Sidebar, outline and overviews | Folder layout, frontmatter `category` and `order`, and `sidebarGroups` |
+| Search | A Pagefind index built from the rendered pages |
+| SEO files | `sitemap.xml`, `robots.txt`, canonical and Open Graph tags |
+| Agent docs | `/llms.txt`, `/skills.md` and one markdown file per page under `/skills/` |
+| Build audit | Broken links, missing demos, wrong API defaults and bundle leaks fail a build |
+
+## Quick start
+
+1. [Install](/getting-started/installation) the package, add the `docs:dev` and `docs:build` scripts and write a minimal `docs.config.ts`.
+2. Add an `index.mdx` next to a component, following [Component pages](/file-conventions/component-pages).
+3. Run `lobedocs dev` to preview it, then `lobedocs build` and [deploy](/guide/build-and-deploy) `dist/`.
+
+## How these docs are organized
+
+- **Getting Started**: this introduction, [Installation](/getting-started/installation) and the [CLI](/getting-started/cli).
+- **File Conventions**: the files the kit reads, from the [project layout](/file-conventions/project-structure) to [`docs.config.ts`](/file-conventions/docs-config) and [component pages](/file-conventions/component-pages).
+- **Guide**: one page per feature: Markdown, demos, API tables, guide pages, the home page, theming, search, agent docs, integrations, build and deploy.
+- **Advanced**: [build validations](/advanced/validations), [React Router overrides](/advanced/react-router) and [migrating from dumi](/advanced/migrating-from-dumi).
+- **Components**: two sample component pages, [Button](/components/button) and [Callout](/components/callout), that show the conventions in use.
+
+## How this site is built
+
+This site is the `playground/` folder of the [docs-kit repository](https://github.com/lobehub/docs-kit). It is an ordinary consumer: a `docs.config.ts`, guide pages under `docs/`, a custom home page in `docs/home/home.tsx`, and two sample components, [Button](/components/button) and [Callout](/components/callout), under `src/`. The repository's CI builds it on every push, so each feature described here is also checked end to end.
+
+## FAQ
+
+### Do my components have to use Lobe UI?
+
+No. The site chrome is built with `@lobehub/ui`, but the components you document can be any React 19 components. Demos render them as they are.
+
+### Does the site need a server?
+
+No. `lobedocs build` writes static HTML, assets and a Pagefind index to `dist/`. Search runs in the browser.
+
+### Can I keep the URLs of an existing dumi site?
+
+Yes. [Migrating from dumi](/advanced/migrating-from-dumi) covers moving content over and the `legacyRedirects` map for old demo URLs.
+
+### Can I serve the site under a sub-path?
+
+Yes. Add your own React Router config with a `basename`, as described in [React Router](/advanced/react-router).
+
+<Callout title="Next step" type="tip">
+  Follow [Installation](/getting-started/installation) to add the kit to your own repository.
+</Callout>

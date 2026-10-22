@@ -25,7 +25,7 @@ it('loads synchronous document metadata without compiling the MDX component', as
   expect(module.default).toMatchObject({
     pathname: '/',
     source: 'docs/index.mdx',
-    title: 'Docs Kit Playground',
+    title: 'Lobe Docs Kit',
   });
   expect(typeof module.default).toBe('object');
 });

@@ -1,0 +1,77 @@
+---
+title: Guide Pages and Sidebar
+description: Publish guide pages from docs/, group them in the sidebar, and control sections, categories and links.
+order: 4
+---
+
+import Callout from '../../src/Callout';
+
+Not everything is a component page. Guides such as setup notes, migration steps or design principles live under `docs/`, and you decide which ones are published and where they sit in the sidebar.
+
+## Publishing a guide
+
+Add `docs/<path>.mdx` with a `title` and a `description`, then list it in `publicDocs`. It is served at `/<path>`:
+
+```ts
+publicDocs: ['docs/guides/setup.mdx'], // -> /guides/setup
+```
+
+Files under `docs/` that are not listed are not published, so drafts and internal notes can live next to the guides.
+
+## Sidebar groups
+
+A listed guide has no sidebar entry until it belongs to a group. `themeConfig.sidebarGroups` turns a folder into a sidebar section. This site uses four:
+
+```ts
+sidebarGroups: [
+  { dir: 'docs/getting-started', icon: 'rocket', order: -4, title: 'Getting Started' },
+  { dir: 'docs/file-conventions', icon: 'folder-tree', order: -3, title: 'File Conventions' },
+  { dir: 'docs/guide', icon: 'book-open', order: -2, title: 'Guide' },
+  { dir: 'docs/advanced', icon: 'wrench', order: -1, title: 'Advanced' },
+],
+```
+
+| Field   | Effect                                                                                 |
+| ------- | -------------------------------------------------------------------------------------- |
+| `dir`   | Source path prefix. Matches the folder and every file under it; the longest match wins |
+| `title` | Section title in the sidebar and in `/sections/<title>`                                |
+| `icon`  | Lucide icon name in kebab-case                                                         |
+| `order` | Section sort key, lower first. Built-in sections such as Components start at 0         |
+
+Inside a group, a page's `category` frontmatter picks the sub-group. Without one, the page falls into a category named after the group, and a section with a single such category is shown flat. Pages sort by `order`, then by title.
+
+<Callout title="Get Started points at the first section">
+  The home page's Get Started action links to the first page of the first sidebar section. With the
+  groups above, that is [Introduction](/getting-started/introduction).
+</Callout>
+
+## Component sections
+
+Component pages are grouped by section, then by `category`:
+
+1. `navSections[source]`, when set for that file.
+2. The atom root's `subType`, capitalized (`plugins` becomes `Plugins`).
+3. For lobe-ui's own namespaces (`chat`, `mobile`, `awesome`, `brand`, `mdx`, `icons`, `color`, `dashboard`, `storybook`), the folder name.
+4. Otherwise `Components`.
+
+`navSections` is only for a page that sits outside its section's folder:
+
+```ts
+navSections: { 'src/legacy/Bubble/index.mdx': 'Chat' },
+```
+
+Every section gets an overview page at `/sections/<section>`, and each category of a section with several gets `/sections/<section>/<category>`. This site's components are at [/sections/components](/sections/components).
+
+## Top-level links
+
+`themeConfig.navItems` adds links to the sidebar after Home, followed by the links to `skills.md`, `llms.txt` and Changelog that every site has. `themeConfig.actions` adds text links to the top bar, and the `socialLinks` entry with `icon: 'github'` becomes the top bar's GitHub button.
+
+```ts
+navItems: [
+  { href: '/migration-v6', icon: 'milestone', label: 'Migrating to v6' },
+  { external: true, href: 'https://ui.lobehub.com', icon: 'external-link', label: 'Live Example: Lobe UI' },
+],
+actions: [{ href: '/changelog', label: 'Changelog' }],
+```
+
+`icon` is a Lucide icon name in kebab-case, loaded on demand; without it a link gets a document icon. `external: true` opens the link in a new tab.

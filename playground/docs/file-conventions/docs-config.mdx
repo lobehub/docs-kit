@@ -1,0 +1,102 @@
+---
+title: docs.config.ts
+description: Every field of docs.config.ts and themeConfig, as defined by the kit's DocsConfig type.
+order: 2
+---
+
+import Callout from '../../src/Callout';
+
+`docs.config.ts` is the one file that describes your site: its name and URL, where the component docs live, which guide pages to publish and how the chrome looks. Everything else is derived from the files in your repository.
+
+## Loading
+
+`docs.config.ts` sits at the repository root and default-exports a plain object. The kit loads it once per process in a `node --import tsx` subprocess and passes the JSON result to the site, so:
+
+- It must be a pure module with a default export.
+- Values must survive JSON serialization; functions are dropped. Options that need functions, such as StyleX options, are passed as a module path instead.
+- Edits apply after restarting `lobedocs dev`.
+
+The playground's own config is a good full example:
+
+```ts
+import legacyRedirects from './compatibility.json';
+
+export default {
+  atomDirs: [{ dir: 'src' }],
+  title: 'Lobe Docs Kit',
+  description:
+    'Static documentation sites for React component libraries, driven by MDX and one config file.',
+  siteUrl: 'https://docs-kit.lobehub.com',
+  homePage: './docs/home/home.tsx',
+  legacyRedirects,
+  publicDocs: ['docs/getting-started/introduction.mdx' /* … */],
+  themeConfig: {
+    apiHeader: { github: 'https://github.com/lobehub/docs-kit' /* … */ },
+    sidebarGroups: [{ dir: 'docs/getting-started', order: -4, title: 'Getting Started' } /* … */],
+    socialLinks: [{ href: 'https://github.com/lobehub/docs-kit', icon: 'github', label: 'GitHub' }],
+  },
+};
+```
+
+## Top-level fields
+
+| Field | Type | Purpose |
+| --- | --- | --- |
+| `atomDirs` | `{ dir: string; type?: string; subType?: string }[]` | Required. Roots scanned recursively for `index.mdx` |
+| `title` | `string` | Required. Site name in `<title>`, Open Graph and `llms.txt` |
+| `description` | `string` | Required. Site summary |
+| `siteUrl` | `string` | Required. Canonical origin without a trailing slash, used for the sitemap, canonical and Open Graph URLs |
+| `alias` | `Record<string, string>` | Vite aliases, resolved from the repository root. Map your package name to `src` so demos import it by name |
+| `homePage` | `string` | Module whose default export renders the home page. A missing file is a build error. See [Home Page](/guide/home-page) |
+| `publicDocs` | `string[]` | Guide pages to publish from `docs/`. See [Guide Pages and Sidebar](/guide/guide-pages) |
+| `navSections` | `Record<string, string>` | Section override keyed by MDX source, for a page outside its section's folder |
+| `favicons` | `Record<string, string>` | Favicon hrefs keyed `icon`, `icon16`, `icon32` and `appleTouchIcon`. Unset keys fall back to `/favicon.ico`, `/favicon-16x16.png`, `/favicon-32x32.png` and `/apple-touch-icon.png`, so ship those in `public/` or set all four |
+| `stylex` | `string \| object` | StyleX options, or a path to a module that default-exports them. See [Theme and Appearance](/guide/theming) |
+| `legacyRedirects` | `DocumentationInventory` | Frozen inventory of an old dumi site. See [Migrating from dumi](/advanced/migrating-from-dumi) |
+
+### atomDirs
+
+`dir` is a folder relative to the repository root. With several entries, `subType` prefixes the URL (`/components/plugins/mention`) and becomes the sidebar section; `type` is only a label in the agent docs. Map each `subType` to a package with `themeConfig.apiHeader.packageNames`:
+
+```ts
+atomDirs: [
+  { dir: 'src/react', subType: 'react' },
+  { dir: 'src/plugins', subType: 'plugins' },
+],
+themeConfig: {
+  apiHeader: {
+    packageNames: { plugins: '@lobehub/editor/plugins', react: '@lobehub/editor/react' },
+  },
+},
+```
+
+## themeConfig
+
+| Field | Purpose |
+| --- | --- |
+| `apiHeader` | Import line and NPM, Source and Edit links on component pages. See [Component Pages](/file-conventions/component-pages#header-links) |
+| `navItems` | `{ href, label, icon?, external? }[]` sidebar links after Home |
+| `actions` | `{ href, label, external? }[]` text links in the top bar |
+| `socialLinks` | `{ href, label, icon? }[]`; the entry with `icon: 'github'` becomes the top bar's GitHub button |
+| `sidebarGroups` | `{ dir, title, icon?, order? }[]` sidebar sections built from folders |
+| `prefersColor` | `'auto'` (default, with a theme switcher), `'light'` or `'dark'` (forced, no switcher) |
+| `home` | Content for the default home page; ignored when `homePage` is set |
+| `giscus` | `{ repo, repoId, category, categoryId }` comments at the end of each page |
+| `analytics.plausible` | `{ domain, source }` Plausible script |
+| `metadata.openGraph.image` | Default Open Graph image URL |
+
+### apiHeader
+
+| Field | Default | Purpose |
+| --- | --- | --- |
+| `packageName` | `@lobehub/ui` | Package in the import line and the NPM link |
+| `packageNames` | none | Package per `atomDirs` `subType`, for the import line |
+| `github` | none | Repository URL, substituted for `{github}` |
+| `docUrl` | `{github}/edit/master/{atomId}` | Edit link; `{atomId}` is the MDX path |
+| `sourceUrl` | `{github}/tree/master/{atomId}` | Source link; `{atomId}` is the component folder |
+| `match` | every `src/**` page | URL prefixes of the pages that get these links |
+
+<Callout title="There is no defineDocsConfig export" type="warning">
+  The stable entry points are the `lobedocs` CLI and `@lobehub/docs-kit/react-router-config`. Export
+  a plain object from `docs.config.ts`.
+</Callout>

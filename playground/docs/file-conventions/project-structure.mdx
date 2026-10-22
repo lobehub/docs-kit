@@ -1,0 +1,68 @@
+---
+title: Project Structure
+description: Where each kind of file lives in a consumer repository and how files map to URLs.
+order: 1
+---
+
+Docs Kit works by convention: where a file sits decides whether it becomes a page and what its URL is. This page lists the files the kit looks for, what each one turns into, and the routes it adds on its own.
+
+## Layout
+
+```text
+<repo>/
+├── docs.config.ts          # required: default-exported config object
+├── package.json            # lobedocs scripts
+├── docs/
+│   ├── index.mdx           # "/" (required; frontmatter feeds the home page SEO)
+│   ├── changelog.mdx       # "/changelog" (optional; else CHANGELOG.md is rendered)
+│   ├── guides/setup.mdx    # "/guides/setup" when listed in publicDocs
+│   └── home/home.tsx       # optional custom home page (config.homePage)
+├── src/
+│   └── Button/
+│       ├── index.ts        # barrel export; <Api> resolves props through it
+│       ├── Button.tsx
+│       ├── type.ts         # props with JSDoc
+│       ├── index.mdx       # "/components/button"
+│       └── demos/
+│           ├── index.tsx   # one default-export component per file
+│           └── Variant.tsx
+├── public/                 # static files served at "/"
+└── CHANGELOG.md
+```
+
+## What gets discovered
+
+- **Component pages**: only files named `index.mdx` under an `atomDirs` root. `index.md` and `README.md` are ignored.
+- **Guide pages**: only the `docs/**/*.mdx` files listed in `publicDocs`. Other files under `docs/` are not published.
+- **Home and changelog**: `docs/index.mdx` and `docs/changelog.mdx` are always picked up. Without `docs/changelog.mdx`, a root `CHANGELOG.md` is rendered at `/changelog`.
+- **Demos**: files under `src/**/demos/**`. Standalone demo routes and isolated demos are only generated from that path.
+
+## From file to URL
+
+| Source                         | URL                          |
+| ------------------------------ | ---------------------------- |
+| `docs/index.mdx`               | `/`                          |
+| `docs/changelog.mdx`           | `/changelog`                 |
+| `docs/guides/setup.mdx`        | `/guides/setup`              |
+| `src/Button/index.mdx`         | `/components/button`         |
+| `src/base-ui/Select/index.mdx` | `/components/base-ui/select` |
+| `src/chat/ChatItem/index.mdx`  | `/components/chat/chat-item` |
+
+Component URLs are built from the folder path under the atom root, with each segment kebab-cased. With more than one `atomDirs` entry, the entry's `subType` is added as a prefix, so `src/plugins/Mention/index.mdx` with `subType: 'plugins'` becomes `/components/plugins/mention`. A frontmatter `route` overrides the URL, but component pages must stay under `/components/`.
+
+## Generated routes
+
+Besides the pages above, every site serves:
+
+| Route | Content |
+| --- | --- |
+| `/sections/<section>` | Overview of a sidebar section |
+| `/sections/<section>/<category>` | Overview of a category, when a section has several |
+| `/~demos/<id>` | A demo on its own page, used by isolated demos and "Open" |
+| `/llms.txt`, `/skills.md`, `/skills/…` | [Agent docs](/guide/ai-docs) |
+| `/sitemap.xml`, `/robots.txt` | SEO files built from `siteUrl` |
+| `/404` | The not-found page, also copied to `404.html` |
+
+## This site
+
+The playground follows the same layout. Guide pages live in `docs/getting-started`, `docs/file-conventions`, `docs/guide` and `docs/advanced`, each listed in `publicDocs` and grouped in the sidebar with `sidebarGroups`. The sample components live in `src/Button` and `src/Callout`.

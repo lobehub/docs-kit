@@ -2,6 +2,7 @@
 title: Button
 description: Button triggers an action, with default, primary and text variants.
 category: General
+order: -1
 ---
 
 import DemoIndex from './demos/index.tsx?demo';
@@ -9,9 +10,15 @@ import DemoVariant from './demos/Variant.tsx?demo';
 import DemoDynamicImport from './demos/DynamicImport.tsx?demo';
 import DemoPlayground from './demos/Playground.tsx?demo';
 
-<Demo of={DemoIndex} title="Basic" />
+## Introduction
+
+Button is the sample component of this playground. Its page follows the layout described in [Component Pages](/file-conventions/component-pages) and exercises each demo mode the kit supports, so a change that breaks one of them fails the playground build in CI.
+
+<Demo of={DemoIndex} title="Basic usage" />
 
 ## Playground
+
+An interactive playground built with `StoryBook` and `useControls` from `@lobehub/ui/storybook`, rendered with `layout="bare"`.
 
 <Demo of={DemoPlayground} layout="bare" />
 
@@ -21,9 +28,13 @@ import DemoPlayground from './demos/Playground.tsx?demo';
 
 ## Lazy content
 
+This demo loads its label with a dynamic `import()`, which the live editor cannot run, so the page sets `editable={false}`.
+
 <Demo editable={false} of={DemoDynamicImport} />
 
 ## Props
+
+A hand-written Markdown table still works next to the generated one.
 
 | Property   | Description                 | Type                                 |
 | ---------- | --------------------------- | ------------------------------------ |

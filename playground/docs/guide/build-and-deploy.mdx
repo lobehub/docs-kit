@@ -1,0 +1,51 @@
+---
+title: Build and Deploy
+description: Build the static site into dist/, check what it contains, and publish it to any static host.
+order: 10
+---
+
+import Callout from '../../src/Callout';
+
+A Docs Kit site builds to plain static files. `lobedocs build` prerenders every page, checks the result and writes it to `dist/`, so deploying means uploading one folder to any static host.
+
+## Build
+
+```bash
+pnpm lobedocs build
+```
+
+The command prerenders every page with React Router, then finalizes the output, audits it and moves it into `dist/`. The site has no server side: `ssr` is off and every route, including the agent files and the sitemap, is written as a file. See [CLI](/getting-started/cli#what-build-does) for the steps.
+
+## What dist/ contains
+
+| Path                               | Content                                                |
+| ---------------------------------- | ------------------------------------------------------ |
+| `index.html`, `<page>/index.html`  | One prerendered page per document and section overview |
+| `~demos/<id>/index.html`           | Standalone demo pages                                  |
+| `404.html`                         | The not-found page                                     |
+| `assets/`                          | JavaScript and CSS bundles                             |
+| `pagefind/`                        | The search index                                       |
+| `sitemap.xml`, `robots.txt`        | Built from `siteUrl`                                   |
+| `llms.txt`, `skills.md`, `skills/` | [Agent docs](/guide/ai-docs)                           |
+
+## Deploy
+
+`dist/` is a folder of static files, so any static host can serve it: publish `dist/` as the output directory and run `lobedocs build` (or your `docs:build` script) as the build command. Node.js 22.22 or later must be available in the build environment.
+
+- Serve `404.html` for unknown paths if your host supports a custom 404 page.
+- Set `siteUrl` to the deployed origin; canonical URLs, Open Graph URLs and the sitemap use it.
+- To serve the site from a sub-path such as `/docs`, set a React Router `basename`; see [React Router Overrides](/advanced/react-router).
+
+<Callout title="The build is the test" type="tip">
+  Because the build audits links, demos, API tables and bundles, running `lobedocs build` in CI
+  catches broken docs before they are deployed. The docs-kit repository builds this site in CI for
+  the same reason.
+</Callout>
+
+## Bundle report
+
+```bash
+ANALYZE=1 pnpm lobedocs build
+```
+
+writes an interactive treemap of the client bundles to `.react-router/build/client/stats.html`.

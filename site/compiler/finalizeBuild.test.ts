@@ -18,7 +18,7 @@ it('runs 404, Pagefind, metadata, audit, and atomic promotion in order', async (
   const output = path.resolve(root, 'dist');
   const events: string[] = [];
   mkdirSync(client, { recursive: true });
-  writeFileSync(path.resolve(client, 'index.html'), '<h1>Docs Kit Playground</h1>');
+  writeFileSync(path.resolve(client, 'index.html'), '<h1>Lobe Docs Kit</h1>');
   writeFileSync(path.resolve(client, '__spa-fallback.html'), '<div id="app"></div>');
   mkdirSync(path.resolve(client, '404'), { recursive: true });
   writeFileSync(
@@ -45,7 +45,7 @@ it('runs 404, Pagefind, metadata, audit, and atomic promotion in order', async (
             readFileSync(path.resolve(options.outputDirectory, 'robots.txt'), 'utf8'),
           ).toContain('Disallow: /~demos/');
           expect(readFileSync(path.resolve(options.outputDirectory, 'llms.txt'), 'utf8')).toContain(
-            '# Docs Kit Playground',
+            '# Lobe Docs Kit',
           );
           expect(
             readFileSync(path.resolve(options.outputDirectory, 'skills.md'), 'utf8'),
@@ -83,7 +83,7 @@ it('runs 404, Pagefind, metadata, audit, and atomic promotion in order', async (
 
     expect(events).toEqual(['pagefind', 'audit']);
     expect(readFileSync(path.resolve(output, 'index.html'), 'utf8')).toContain(
-      'Docs Kit Playground',
+      'Lobe Docs Kit',
     );
     expect(readFileSync(path.resolve(output, '__spa-fallback.html'), 'utf8')).toContain('app');
     expect(readFileSync(path.resolve(output, '404.html'), 'utf8')).toContain(
