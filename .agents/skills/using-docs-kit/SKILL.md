@@ -13,7 +13,8 @@ description: >
 
 The consumer repo holds **only content + `docs.config.ts`**. The kit owns Vite and React Router
 config; do not add `vite.config.ts` or `react-router.config.ts` unless overriding (see
-[reference/config.md](reference/config.md)).
+[reference/config.md](reference/config.md)). Extend the kit Vite pipeline with `docs.vite.ts`
+(or `docs.config.ts` → `vite`) instead of patching the package.
 
 lobe-ui itself is the reference consumer: `docs.config.ts`, `docs/`, `src/*/index.mdx`,
 `src/*/demos/`.
@@ -23,6 +24,7 @@ lobe-ui itself is the reference consumer: `docs.config.ts`, `docs/`, `src/*/inde
 ```
 <repo>/
 ├── docs.config.ts          # defineDocsConfig({...}) — required
+├── docs.vite.ts            # optional consumer Vite plugins (or set config.vite)
 ├── package.json            # lobedocs scripts
 ├── docs/
 │   ├── index.mdx           # "/" — required (frontmatter feeds SEO even with a custom homePage)
@@ -90,9 +92,9 @@ export default {
 };
 ```
 
-> The package's only stable JS entry is `@lobehub/docs-kit/react-router-config`; there is no
-> root export for `defineDocsConfig`. It is an identity function, so export a plain object.
-> (lobe-ui imports it from `./packages/docs-kit/src/config` only because it is the workspace.)
+> Stable JS entries: `@lobehub/docs-kit/react-router-config` and `@lobehub/docs-kit/vite-extension`.
+> There is no root export for `defineDocsConfig` (identity helper — a plain default export is fine).
+> (lobe-ui may import `./packages/docs-kit/src/config` only because it is the workspace.)
 
 **Restart `lobedocs dev` after editing `docs.config.ts`** — config is cached per process.
 

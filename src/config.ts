@@ -118,6 +118,15 @@ export interface DocsConfig {
   stylex?: Record<string, unknown> | string;
   themeConfig?: DocsThemeConfig;
   title: string;
+  /**
+   * Module path (relative to the repository root) that default-exports consumer
+   * Vite plugins or a `{ plugins, optimizeDeps, ssr, apply }` extension object.
+   * Loaded in-process by the kit `vite.config.ts` (not via the JSON config
+   * subprocess), so plugin hooks stay intact. When omitted, the kit also looks
+   * for convention files `docs.vite.{ts,mts,mjs,js,cjs}` then `docs.kit-plugins.cjs`.
+   * See `src/viteExtension.ts` and the docs.config reference.
+   */
+  vite?: string;
 }
 
 export type ClientSiteConfig = Pick<

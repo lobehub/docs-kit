@@ -27,6 +27,7 @@
   "files": [
     "bin",
     "react-router-config.ts",
+    "vite-extension.ts",
     "site",
     "src",
     "vite.config.ts"

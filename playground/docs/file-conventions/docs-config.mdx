@@ -52,6 +52,7 @@ export default {
 | `navSections` | `Record<string, string>` | Section override keyed by MDX source, for a page outside its section's folder |
 | `favicons` | `Record<string, string>` | Favicon hrefs keyed `icon`, `icon16`, `icon32` and `appleTouchIcon`. Unset keys fall back to `/favicon.ico`, `/favicon-16x16.png`, `/favicon-32x32.png` and `/apple-touch-icon.png`, so ship those in `public/` or set all four |
 | `stylex` | `string \| object` | StyleX options, or a path to a module that default-exports them. See [Theme and Appearance](/guide/theming) |
+| `vite` | `string` | Path to a module that default-exports consumer Vite plugins or a `{ plugins, optimizeDeps, ssr, apply }` object. Loaded in-process (hooks preserved). See below. |
 | `legacyRedirects` | `DocumentationInventory` | Frozen inventory of an old dumi site. See [Migrating from dumi](/advanced/migrating-from-dumi) |
 
 ### atomDirs
@@ -69,6 +70,66 @@ themeConfig: {
   },
 },
 ```
+
+### vite
+
+`docs.config.ts` is JSON-serialized, so Vite plugin hooks cannot live in the config object. Point `vite` at a module instead (same idea as `stylex`), or drop a convention file at the repository root:
+
+- `docs.vite.ts` / `.mts` / `.mjs` / `.js` / `.cjs` (first match wins)
+- `docs.kit-plugins.cjs` (legacy filename from an unofficial consumer patch; still loaded for drop-in upgrades)
+
+The kit loads that module **in-process** from its own `vite.config.ts` and **prepends** the returned plugins ahead of StyleX / MDX / React Router, so `enforce: 'pre'` transforms run first. Use this to swap browser demo modules, add `configureServer` hooks in `lobedocs dev`, or extend `optimizeDeps` / `ssr`.
+
+The public helper and types ship from `@lobehub/docs-kit/vite-extension` (same publish pattern as `@lobehub/docs-kit/react-router-config`). Deep imports under `src/` are not a stable API.
+
+```ts
+// docs.config.ts — optional when the convention file name is used
+export default {
+  // …
+  vite: './docs.vite.ts',
+};
+```
+
+```ts
+// docs.vite.ts
+import type { Plugin } from 'vite';
+
+import { defineDocsVite } from '@lobehub/docs-kit/vite-extension';
+
+const demoBrowserPlugin = (): Plugin => ({
+  name: 'demo-browser-modules',
+  enforce: 'pre',
+  transform(code, id, options) {
+    // Client-only: skip SSR / prerender so browser-only deps never enter the server bundle.
+    if (options?.ssr) return null;
+    if (!id.includes('/demos/') || !id.endsWith('.tsx')) return null;
+    // Replace the browser module; docs-kit still reads the on-disk source for code display.
+    return null;
+  },
+  configureServer() {
+    // Dev-only middleware / WebSocket — Vite does not run this during `lobedocs build`.
+  },
+});
+
+export default defineDocsVite({
+  // Omit `apply` so transforms also run in the client build. Use `apply: 'serve'` only for
+  // hooks that must not exist in build/prerender at all (for example live WebSockets).
+  // Do not use `apply: 'serve'` for demo transforms that the static site still needs.
+  optimizeDeps: {
+    // List browser-only packages your plugin introduces, when needed.
+  },
+  ssr: {
+    // Keep those same packages external to the SSR bundle when needed.
+  },
+  plugins: [demoBrowserPlugin()],
+});
+```
+
+A default export may also be a single plugin, a plugin array, or a factory `(env) => …` that receives Vite's `ConfigEnv` (`command`, `mode`, `isSsrBuild`, …). Zero-arg factories (common in `.cjs` hooks) still work.
+
+docs-kit only provides this extension entry and the load/order/`apply` semantics above. It does **not** ship or end-to-end verify any particular Ink / xterm consumer plugin — that remains in the consuming repo.
+
+Restart `lobedocs dev` after changing the module path in `docs.config.ts`; Vite still hot-reloads the plugin module once loaded.
 
 ## themeConfig
 

@@ -6,18 +6,29 @@ Source of truth: `packages/docs-kit/src/config.ts` (`DocsConfig`). Loaded once p
 
 ## Top-level fields
 
-| Field             | Type                                                 | Notes                                                                                                  |
-| ----------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `atomDirs`        | `{ dir: string; type?: string; subType?: string }[]` | Required. Roots scanned recursively for `index.mdx`                                                    |
-| `title`           | `string`                                             | Required. Site name in `<title>`, OG, llms.txt                                                         |
-| `description`     | `string`                                             | Required. Site summary                                                                                 |
-| `siteUrl`         | `string`                                             | Required. Canonical origin (no trailing slash) for sitemap/OG/canonical                                |
-| `alias`           | `Record<string, string>`                             | Vite aliases. Map your package name (and `pkg/es`) to `src` so demos import the package but run source |
-| `homePage`        | `string`                                             | Path to a module whose default export is the landing page. Missing file = build error                  |
-| `publicDocs`      | `string[]`                                           | Extra `docs/**/*.mdx` guide pages to publish (route = path without `docs/` and extension)              |
-| `navSections`     | `Record<string, string>`                             | `{ 'src/foo/Bar/index.mdx': 'Section' }` — only for a page sitting outside its section's folder        |
-| `favicons`        | `{ icon?, icon16?, icon32?, appleTouchIcon? }`       | Hrefs into `public/`; unset keys fall back to lobe-ui's paths, so set all four                         |
-| `legacyRedirects` | `DocumentationInventory`                             | Frozen old-URL inventory (lobe-ui's `compatibility.json` from dumi). New sites: omit                   |
+| Field             | Type                                                 | Notes                                                                                                                                                                          |
+| ----------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `atomDirs`        | `{ dir: string; type?: string; subType?: string }[]` | Required. Roots scanned recursively for `index.mdx`                                                                                                                            |
+| `title`           | `string`                                             | Required. Site name in `<title>`, OG, llms.txt                                                                                                                                 |
+| `description`     | `string`                                             | Required. Site summary                                                                                                                                                         |
+| `siteUrl`         | `string`                                             | Required. Canonical origin (no trailing slash) for sitemap/OG/canonical                                                                                                        |
+| `alias`           | `Record<string, string>`                             | Vite aliases. Map your package name (and `pkg/es`) to `src` so demos import the package but run source                                                                         |
+| `homePage`        | `string`                                             | Path to a module whose default export is the landing page. Missing file = build error                                                                                          |
+| `publicDocs`      | `string[]`                                           | Extra `docs/**/*.mdx` guide pages to publish (route = path without `docs/` and extension)                                                                                      |
+| `navSections`     | `Record<string, string>`                             | `{ 'src/foo/Bar/index.mdx': 'Section' }` — only for a page sitting outside its section's folder                                                                                |
+| `favicons`        | `{ icon?, icon16?, icon32?, appleTouchIcon? }`       | Hrefs into `public/`; unset keys fall back to lobe-ui's paths, so set all four                                                                                                 |
+| `legacyRedirects` | `DocumentationInventory`                             | Frozen old-URL inventory (lobe-ui's `compatibility.json` from dumi). New sites: omit                                                                                           |
+| `vite`            | `string`                                             | Module path for consumer Vite plugins / `{ plugins, optimizeDeps, ssr, apply }`. In-process load (hooks kept). Convention: `docs.vite.*` or `docs.kit-plugins.cjs`. See below. |
+
+## Consumer Vite plugins (`vite` / `docs.vite.*`)
+
+`docs.config.ts` cannot carry plugin hooks (JSON subprocess). Set `vite: './docs.vite.ts'` or add a root convention file (`docs.vite.ts|mts|mjs|js|cjs`, then legacy `docs.kit-plugins.cjs`). The kit prepends returned plugins before its own.
+
+Public helper/types: `@lobehub/docs-kit/vite-extension` (`defineDocsVite`, etc.) — same publish style as `react-router-config`. Do not import `@lobehub/docs-kit/src/…` as an API.
+
+Export a plugin, plugin array, `(env) => …` factory, or `{ plugins, optimizeDeps?, ssr?, apply? }`. Guard client-only transforms with `options?.ssr` (or `environment.consumer === 'server'`). Use `apply: 'serve'` only for dev-only hooks; demo transforms needed in the static client build must not set `apply: 'serve'`.
+
+docs-kit does not ship or E2E-verify Ink/xterm plugins; consumers own those.
 
 ## `themeConfig`
 

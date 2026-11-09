@@ -5,12 +5,17 @@ import { pathToFileURL } from 'node:url';
 import { reactRouter } from '@react-router/dev/vite';
 import { codeInspectorPlugin } from 'code-inspector-plugin';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { type Alias, defineConfig, normalizePath } from 'vite';
+import { type Alias, defineConfig, mergeConfig, normalizePath } from 'vite';
 
 import { createMdxPlugin } from './site/compiler/content/mdxPlugin';
 import { devPagefindPlugin } from './site/compiler/search/devPagefindPlugin';
 import { lobeDocs } from './site/compiler/vitePlugin';
 import { getDocsConfig } from './src/config';
+import {
+  applyDocsVitePluginGate,
+  loadDocsViteExtension,
+  shouldApplyDocsViteExtension,
+} from './src/viteExtension';
 
 const repositoryRoot = process.cwd();
 const docsKitRoot = normalizePath(import.meta.dirname);
@@ -103,53 +108,78 @@ const stylex = async () => {
   };
 };
 
-export default defineConfig({
-  optimizeDeps: process.env.VITEST
-    ? { noDiscovery: true }
-    : {
-        // Components and demos are lazy-loaded per docs page, so with default entry
-        // crawling Vite keeps discovering deps mid-session, re-optimizing and
-        // full-reloading on nearly every navigation. Crawl all client sources
-        // upfront so every dep is found in the initial optimize pass.
-        entries: [
-          'src/**/*.{ts,tsx}',
-          `${docsKitRoot}/site/app/**/*.{ts,tsx}`,
-          `${docsKitRoot}/site/components/**/*.{ts,tsx}`,
-          '!**/*.d.ts',
-          '!**/*.test.*',
-        ],
-        // A pre-bundled dep that imports an aliased package (@lobehub/icons ->
-        // @lobehub/ui -> src) would otherwise inline its own copy of that source,
-        // skipping source plugins such as StyleX. Externalized, the import is
-        // resolved through the alias at serve time.
-        exclude: Object.keys(docsConfig.alias ?? {}),
-        // Installed UI packages and generated demo modules expose these only at
-        // runtime. Pre-bundle the dependencies available in the consuming project
-        // to avoid an invalidating second optimization pass after first paint.
-        include: runtimeOptimizeDeps,
-      },
-  plugins: [
-    stylex(),
-    codeInspectorPlugin({
-      bundler: 'vite',
-    }),
-    lobeDocs(),
-    devPagefindPlugin(),
-    createMdxPlugin(),
-    // Vite compiler tests run in parallel and share the repository-level
-    // React Router typegen directory. The route plugin is covered by the real
-    // lobedocs build/typegen commands instead of starting competing watchers.
-    process.env.VITEST ? undefined : reactRouter(),
-    process.env.ANALYZE
-      ? visualizer({ filename: '.react-router/build/client/stats.html' })
-      : undefined,
-  ],
-  resolve: {
-    alias: createAliasEntries(docsConfig.alias),
-    dedupe: ['@lobehub/ui', 'react', 'react-dom'],
-    tsconfigPaths: true,
-  },
-  ssr: {
-    noExternal: [/^@lobehub\/ui(?:\/.*)?$/, '@lobehub/icons', '@lobehub/fluent-emoji'],
-  },
+const docsKitOptimizeDeps = process.env.VITEST
+  ? { noDiscovery: true }
+  : {
+      // Components and demos are lazy-loaded per docs page, so with default entry
+      // crawling Vite keeps discovering deps mid-session, re-optimizing and
+      // full-reloading on nearly every navigation. Crawl all client sources
+      // upfront so every dep is found in the initial optimize pass.
+      entries: [
+        'src/**/*.{ts,tsx}',
+        `${docsKitRoot}/site/app/**/*.{ts,tsx}`,
+        `${docsKitRoot}/site/components/**/*.{ts,tsx}`,
+        '!**/*.d.ts',
+        '!**/*.test.*',
+      ],
+      // A pre-bundled dep that imports an aliased package (@lobehub/icons ->
+      // @lobehub/ui -> src) would otherwise inline its own copy of that source,
+      // skipping source plugins such as StyleX. Externalized, the import is
+      // resolved through the alias at serve time.
+      exclude: Object.keys(docsConfig.alias ?? {}),
+      // Installed UI packages and generated demo modules expose these only at
+      // runtime. Pre-bundle the dependencies available in the consuming project
+      // to avoid an invalidating second optimization pass after first paint.
+      include: runtimeOptimizeDeps,
+    };
+
+const docsKitSsr = {
+  noExternal: [/^@lobehub\/ui(?:\/.*)?$/, '@lobehub/icons', '@lobehub/fluent-emoji'],
+};
+
+export default defineConfig(async (env) => {
+  // Consumer plugins are loaded in-process (not via the JSON docs.config subprocess)
+  // so hooks survive. They are prepended so `enforce: 'pre'` runs before kit plugins.
+  const consumerVite = await loadDocsViteExtension(repositoryRoot, docsConfig.vite, env);
+  const consumerPlugins = shouldApplyDocsViteExtension(consumerVite.apply, env)
+    ? applyDocsVitePluginGate(consumerVite.plugins, consumerVite.apply)
+    : [];
+
+  const optimizeDeps = consumerVite.optimizeDeps
+    ? mergeConfig(
+        { optimizeDeps: docsKitOptimizeDeps },
+        { optimizeDeps: consumerVite.optimizeDeps },
+      ).optimizeDeps
+    : docsKitOptimizeDeps;
+
+  const ssr = consumerVite.ssr
+    ? mergeConfig({ ssr: docsKitSsr }, { ssr: consumerVite.ssr }).ssr
+    : docsKitSsr;
+
+  return {
+    optimizeDeps,
+    plugins: [
+      ...consumerPlugins,
+      stylex(),
+      codeInspectorPlugin({
+        bundler: 'vite',
+      }),
+      lobeDocs(),
+      devPagefindPlugin(),
+      createMdxPlugin(),
+      // Vite compiler tests run in parallel and share the repository-level
+      // React Router typegen directory. The route plugin is covered by the real
+      // lobedocs build/typegen commands instead of starting competing watchers.
+      process.env.VITEST ? undefined : reactRouter(),
+      process.env.ANALYZE
+        ? visualizer({ filename: '.react-router/build/client/stats.html' })
+        : undefined,
+    ],
+    resolve: {
+      alias: createAliasEntries(docsConfig.alias),
+      dedupe: ['@lobehub/ui', 'react', 'react-dom'],
+      tsconfigPaths: true,
+    },
+    ssr,
+  };
 });
