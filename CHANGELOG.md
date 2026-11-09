@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [6.4.1](https://github.com/lobehub/docs-kit/compare/v6.4.0...v6.4.1) (2026-11-09)
+
+
+### 🐛 Bug Fixes
+
+* Add font variables to global CSS ([63de1d0](https://github.com/lobehub/docs-kit/commit/63de1d0))
+
 # [6.4.0](https://github.com/lobehub/docs-kit/compare/v6.3.2...v6.4.0) (2026-11-09)
 
 
