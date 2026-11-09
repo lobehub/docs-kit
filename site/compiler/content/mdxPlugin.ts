@@ -50,23 +50,35 @@ function mdxHmrPlugin(): Plugin {
   };
 }
 
+// @mdx-js/rollup is typed as rollup.Plugin; Vite 8's Plugin is rolldown-based.
+// Runtime is fine (Vite still consumes rollup-shaped hooks), but SourceMapInput
+// diverges at the type level, so bridge through unknown instead of weakening
+// the rest of the Vite plugin surface.
+function asVitePlugin(plugin: object): Plugin {
+  return plugin as unknown as Plugin;
+}
+
 export function createMdxPlugin(): Plugin[] {
   return [
-    mdx({
-      include: /\.(md|mdx)$/,
-      providerImportSource: normalizePath(resolve(import.meta.dirname, '../../app/mdx-components')),
-      // rehype-raw expands the raw HTML nodes that `.md` format keeps around
-      // (details/summary/kbd/div, entities); without it @mdx-js/mdx's
-      // rehypeRemoveRaw silently drops that markup for `format: 'md'` files
-      // such as the CHANGELOG.md fallback. It is a no-op for `.mdx` since
-      // authored JSX never produces `raw` hast nodes.
-      rehypePlugins: [
-        [rehypeRaw, { passThrough: mdxPassThroughNodeTypes }],
-        rehypeHeadingIds,
-        rehypeTocExport,
-      ],
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm, remarkApi],
-    }),
+    asVitePlugin(
+      mdx({
+        include: /\.(md|mdx)$/,
+        providerImportSource: normalizePath(
+          resolve(import.meta.dirname, '../../app/mdx-components'),
+        ),
+        // rehype-raw expands the raw HTML nodes that `.md` format keeps around
+        // (details/summary/kbd/div, entities); without it @mdx-js/mdx's
+        // rehypeRemoveRaw silently drops that markup for `format: 'md'` files
+        // such as the CHANGELOG.md fallback. It is a no-op for `.mdx` since
+        // authored JSX never produces `raw` hast nodes.
+        rehypePlugins: [
+          [rehypeRaw, { passThrough: mdxPassThroughNodeTypes }],
+          rehypeHeadingIds,
+          rehypeTocExport,
+        ],
+        remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm, remarkApi],
+      }),
+    ),
     mdxHmrPlugin(),
   ];
 }
