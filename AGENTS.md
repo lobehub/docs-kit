@@ -62,10 +62,13 @@ pnpm build:playground     # full static build + artifact audit of playground/ (w
 pnpm test                 # vitest run (cwd = playground/)
 pnpm exec vitest run <path>
 pnpm lint                 # eslint .
-pnpm type-check           # tsc --noEmit
+pnpm lint:style           # stylelint on src/site/playground
+pnpm lint:md              # remark markdown lint
+pnpm lint:circular        # dpdm circular import check
+pnpm type-check           # tsrs --noEmit
 ```
 
 - CI (`.github/workflows/test.yml`) runs `pnpm install --frozen-lockfile`, lint, type-check, `test:coverage` and `build:playground`. Commit `pnpm-lock.yaml` with any dependency change.
 - Restart `pnpm dev` after editing `playground/docs.config.ts`.
-- The only git hook is `commit-msg` (commitlint). Never use `--no-verify`.
+- Git hooks (husky): `pre-commit` runs `type-check`, `lint:circular`, and `lint-staged` (prettier + stylelint + eslint on staged files); `commit-msg` runs commitlint. Never use `--no-verify`.
 - Commits: gitmoji + conventional commit with a lowercase scope, enforced by commitlint, e.g. `✨ feat(cli): ...`, `🐛 fix(search): ...`, `📝 docs: ...`, `✨ feat(playground): ...`. semantic-release publishes to npm from `main`; never bump versions by hand.

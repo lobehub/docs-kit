@@ -5,7 +5,9 @@ publicHoistPattern:
   - '*commitlint*'
   - '*eslint*'
   - '*prettier*'
+  - '*remark*'
   - '*semantic-release*'
+  - '*stylelint*'
 
 packages:
   - playground

@@ -35,13 +35,39 @@
     "build:playground": "pnpm --filter docs-kit-playground run build",
     "dev": "pnpm --filter docs-kit-playground run dev",
     "lint": "eslint .",
+    "lint:circular": "dpdm \"{src,site}/**/*.{ts,tsx}\"  --warning false  --tree false  --exit-code circular:1  -T true",
     "lint:fix": "eslint . --fix",
+    "lint:md": "remark . --quiet --frail --output",
+    "lint:style": "stylelint \"{src,site,playground}/**/*.{ts,tsx}\" --fix",
     "prepare": "husky",
+    "prettier": "prettier -c --write --no-error-on-unmatched-pattern \"**/**\"",
     "release": "semantic-release",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "type-check": "tsrs --noEmit"
+  },
+  "lint-staged": {
+    "*.{md,mdx}": [
+      "prettier --write --no-error-on-unmatched-pattern"
+    ],
+    "*.json": [
+      "prettier --write --no-error-on-unmatched-pattern"
+    ],
+    "*.{js,jsx}": [
+      "prettier --write",
+      "stylelint --fix",
+      "eslint --fix"
+    ],
+    "*.{mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.{ts,tsx}": [
+      "prettier --parser=typescript --write",
+      "stylelint --fix",
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",
@@ -82,14 +108,19 @@
     "@types/unist": "^3.0.3",
     "@vitest/coverage-v8": "^5.1.0",
     "conventional-changelog-gitmoji-config": "1.5.2",
+    "dpdm": "^4.3.0",
     "eslint": "^10.14.0",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.9.10",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router": "8.4.0",
+    "remark": "^15.0.1",
+    "remark-cli": "^12.0.1",
     "semantic-release": "^25.0.9",
+    "stylelint": "^16.26.1",
     "tsrs": "0.18.0-ts7.1.0-dev.20260929",
     "tsx": "^4.23.15",
     "vite": "8.3.4",

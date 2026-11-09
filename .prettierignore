@@ -1,8 +1,56 @@
+# Prettierignore for docs-kit
+################################################################
+
+# general
+.DS_Store
+.editorconfig
+.idea
+.vscode
+.history
+.temp
+.env.local
+.husky
+.npmrc
+.gitkeep
+venv
+temp
+tmp
+LICENSE
+
+# dependencies
 **/node_modules
-**/dist
-**/.react-router
-coverage
-.vitest
+*.log
+*.lock
+package-lock.json
 pnpm-lock.yaml
-CHANGELOG.md
+
+# ci / caches
+coverage
+.coverage
+.eslintcache
+.stylelintcache
+.vitest
 site/compiler/.cache
+test-output
+__snapshots__
+*.snap
+
+# production
+**/.react-router/
+**/dist
+es
+lib
+logs
+
+# generated / changelog
+CHANGELOG.md
+
+# ignore files
+.*ignore
+
+# image
+*.webp
+*.gif
+*.png
+*.jpg
+*.ico
