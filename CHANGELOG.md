@@ -2,6 +2,13 @@
 
 # Changelog
 
+# [6.4.0](https://github.com/lobehub/docs-kit/compare/v6.3.2...v6.4.0) (2026-11-09)
+
+
+### ✨ Features
+
+* **vite**: Add official consumer vite extension entry ([87f645b](https://github.com/lobehub/docs-kit/commit/87f645b))
+
 ## [6.3.2](https://github.com/lobehub/docs-kit/compare/v6.3.1...v6.3.2) (2026-11-09)
 
 

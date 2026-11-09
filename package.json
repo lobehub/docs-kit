@@ -1,6 +1,6 @@
 {
   "name": "@lobehub/docs-kit",
-  "version": "6.3.2",
+  "version": "6.4.0",
   "description": "Reusable documentation toolkit and lobedocs CLI for LobeHub component libraries",
   "keywords": [
     "lobehub",
