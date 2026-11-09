@@ -2,6 +2,23 @@
 
 # Changelog
 
+## [6.3.2](https://github.com/lobehub/docs-kit/compare/v6.3.1...v6.3.2) (2026-11-09)
+
+
+### 🎫 Chores
+
+* Align lint-staged and lint tooling with lobe-ui ([883645c](https://github.com/lobehub/docs-kit/commit/883645c))
+
+
+### 🐛 Bug Fixes
+
+* **compiler**: Bridge @mdx-js/rollup Plugin types for Vite 8 ([e0b4466](https://github.com/lobehub/docs-kit/commit/e0b4466))
+
+
+### 💄 Styles
+
+* Update assets ([9e70faf](https://github.com/lobehub/docs-kit/commit/9e70faf))
+
 ## [6.3.1](https://github.com/lobehub/docs-kit/compare/v6.3.0...v6.3.1) (2026-10-22)
 
 
