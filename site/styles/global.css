@@ -7,6 +7,8 @@
   --docs-radius-lg: 0.75rem;
   --docs-radius-md: 0.5rem;
   --docs-radius-sm: 0.375rem;
+  --docs-font-sans: var(--lobe-font-family);
+  --docs-font-mono: var(--lobe-font-family-code);
   --docs-background: #ffffff;
   --docs-surface-raised: #ffffff;
   --docs-surface-muted: #f7f7f8;
